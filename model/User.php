@@ -48,20 +48,20 @@ class User extends Model {
         if (!(isset($this->userName) && is_string($this->userName) && strlen($this->userName) > 0)) {
             $errors[] = "User Name is required.";
         } if (!(isset($this->userName) && is_string($this->userName) && strlen($this->userName) >= 3)) {
-            $errors[] = "User Name length must be between 3 and 16.";
+            $errors[] = "User Name length must be more than 3.";
         } if (!(isset($this->userName) && is_string($this->userName) && preg_match("/^[A-Z][a-zA-Z]*$/", $this->userName))) {
-            $errors[] = "User Name must start by a letter and must contain only letters and numbers.";
+            $errors[] = "User Name must start by a letter and must contain only letters.";
         }
 		
 		if (!(isset($this->fullName) && is_string($this->fullName) && strlen($this->fullName) > 0)) {
             $errors[] = "Full Name is required.";
         } if (!(isset($this->fullName) && is_string($this->fullName) && strlen($this->fullName) >= 3)) {
-            $errors[] = "Full Name length must be between 3 and 16.";
+            $errors[] = "Full Name length must be more than 3.";
         } if (!(isset($this->fullName) && is_string($this->fullName) && preg_match("/^[A-Z][a-zA-Z]*$/", $this->fullName))) {
-            $errors[] = "Full Name must start by a letter and must contain only letters and numbers.";
+            $errors[] = "Full Name must start by a letter and must contain only letters.";
         }
 		
-		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
 			$errors[] = "Invalid email format"; 
 		}
         return $errors;
@@ -77,8 +77,8 @@ class User extends Model {
 	
 	private static function validate_password($password){
         $errors = [];
-        if (strlen($password) <= 8 ) {
-            $errors[] = "Password length must be between 8 and 16.";
+        if (strlen($password) < 8 ) {
+            $errors[] = "Password length must be more than 8.";
         } if (!((preg_match("/[A-Z]/", $password)) && preg_match("/\d/", $password) && preg_match("/['\";:,.\/?\\-]/", $password))) {
             $errors[] = "Password must contain one uppercase letter, one number and one punctuation mark.";
         }
@@ -87,9 +87,9 @@ class User extends Model {
 	
 	
 	public function addUser(){
-		var_dump($this);
-//        self::execute("INSERT INTO user(UserName,Password,FullName,Email) VALUES(:userName,:password,:fullName,:email)", 
- //       array("userName"=>$this->userName, "password"=>$this->hashed_password, "fullName"=>$this->fullName, "email"=>$this->email));
+		//var_dump($this);
+        self::execute("INSERT INTO user(UserName,Password,FullName,Email) VALUES(:userName,:password,:fullName,:email)", 
+       array("userName"=>$this->userName, "password"=>$this->hashed_password, "fullName"=>$this->fullName, "email"=>$this->email));
 		return $this;
     }
 	

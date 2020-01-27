@@ -22,12 +22,12 @@ class ControllerUser extends Controller {
         $password = '';
         $errors = [];
         if (isset($_POST['userName']) && isset($_POST['password'])) { //note : pourraient contenir des chaînes vides
-            $pseudo = $_POST['userName'];
+            $userName = $_POST['userName'];
             $password = $_POST['password'];
 
             $errors = User::validate_login($userName, $password);
             if (empty($errors)) {
-                $this->log_user(User::get_member_by_pseudo($userName));
+                $this->log_user(User::get_user_by_username($userName));
             }
         }
         (new View("login"))->show(array("userName" => $userName, "password" => $password, "errors" => $errors));
@@ -56,7 +56,7 @@ class ControllerUser extends Controller {
             $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
 
             if (count($errors) == 0) { 
-                //$user->addUser(); //sauve l'utilisateur
+                $user->addUser(); //sauve l'utilisateur
                 $this->log_user($user);
             }
         }
