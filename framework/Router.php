@@ -72,7 +72,7 @@ class Router
         try {
             $this->sanitize_all_input();
             //si un parametre 1, 2 ou 3 est vide (et donc non passé), le supprimer.
-            for ($i = 1; $i <= 3; ++$i) {
+            for ($i = 1; $i <= 5; ++$i) {
                 if (isset($_GET["param$i"]) && $_GET["param$i"] == "") {
                     unset($_GET["param$i"]);
                 }

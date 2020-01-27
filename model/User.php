@@ -1,0 +1,136 @@
+<?php
+
+require_once "framework/Model.php";
+//require_once "Message.php";
+
+class User extends Model {
+
+	public $userId;
+    public $userName;
+    public $hashed_password;
+    public $fullName;
+	public $email;
+
+    public function __construct($userName ,$hashed_password, $fullName, $email) {
+		$this->userName = $userName;
+        $this->hashed_password = $hashed_password;
+        $this->fullName = $fullName;
+        $this->email = $email;
+    }
+	
+	public static function validate_unicity($userName){
+        $errors = [];
+        $user = self::get_user_by_username($userName);
+        if ($user) {
+            $errors[] = "This user already exists.";
+        } 
+        return $errors;
+    }
+	
+	public static function get_user_by_username($userName) {
+        $query = self::execute("SELECT * FROM User where UserName = :userName", array("userName"=>$userName));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"]);
+        }
+    }
+	
+	
+	//renvoie un tableau d'erreur(s) 
+    //le tableau est vide s'il n'y a pas d'erreur.
+    //ne s'occupe que de la validation "métier" des champs obligatoires (le pseudo)
+    //les autres champs (mot de passe, description et image) sont gérés par d'autres
+    //méthodes.
+    public function validate(){
+        $errors = array();
+        if (!(isset($this->userName) && is_string($this->userName) && strlen($this->userName) > 0)) {
+            $errors[] = "User Name is required.";
+        } if (!(isset($this->userName) && is_string($this->userName) && strlen($this->userName) >= 3)) {
+            $errors[] = "User Name length must be between 3 and 16.";
+        } if (!(isset($this->userName) && is_string($this->userName) && preg_match("/^[A-Z][a-zA-Z]*$/", $this->userName))) {
+            $errors[] = "User Name must start by a letter and must contain only letters and numbers.";
+        }
+		
+		if (!(isset($this->fullName) && is_string($this->fullName) && strlen($this->fullName) > 0)) {
+            $errors[] = "Full Name is required.";
+        } if (!(isset($this->fullName) && is_string($this->fullName) && strlen($this->fullName) >= 3)) {
+            $errors[] = "Full Name length must be between 3 and 16.";
+        } if (!(isset($this->fullName) && is_string($this->fullName) && preg_match("/^[A-Z][a-zA-Z]*$/", $this->fullName))) {
+            $errors[] = "Full Name must start by a letter and must contain only letters and numbers.";
+        }
+		
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			$errors[] = "Invalid email format"; 
+		}
+        return $errors;
+    }
+	
+	public static function validate_passwords($password, $password_confirm){
+        $errors = User::validate_password($password);
+        if ($password != $password_confirm) {
+            $errors[] = "You have to enter twice the same password.";
+        }
+        return $errors;
+    }
+	
+	private static function validate_password($password){
+        $errors = [];
+        if (strlen($password) <= 8 ) {
+            $errors[] = "Password length must be between 8 and 16.";
+        } if (!((preg_match("/[A-Z]/", $password)) && preg_match("/\d/", $password) && preg_match("/['\";:,.\/?\\-]/", $password))) {
+            $errors[] = "Password must contain one uppercase letter, one number and one punctuation mark.";
+        }
+        return $errors;
+    }
+	
+	
+	public function addUser(){
+		var_dump($this);
+//        self::execute("INSERT INTO user(UserName,Password,FullName,Email) VALUES(:userName,:password,:fullName,:email)", 
+ //       array("userName"=>$this->userName, "password"=>$this->hashed_password, "fullName"=>$this->fullName, "email"=>$this->email));
+		return $this;
+    }
+	
+	
+	////////////
+	////////////
+	////////////
+	////////////
+	////////////
+	////////////
+	////////////
+	
+	
+	
+	//renvoie un tableau d'erreur(s) 
+    //le tableau est vide s'il n'y a pas d'erreur.
+    public static function validate_login($userName, $password) {
+        $errors = [];
+        $user = User::get_user_by_username($userName);
+        if ($user) {
+            if (!self::check_password($password, $user->hashed_password)) {
+                $errors[] = "Wrong password. Please try again.";
+            }
+        } else {
+            $errors[] = "Can't find a member with the pseudo '$pseudo'. Please sign up.";
+        }
+        return $errors;
+    }
+	
+	private static function check_password($clear_password, $hash) {
+        return $hash === Tools::my_hash($clear_password);
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+?>
