@@ -10,7 +10,7 @@ class ControllerUser extends Controller {
     //sinon, produit la vue d'accueil.
     public function index() {
         if ($this->user_logged()) {
-            //$this->redirect("member", "profile");
+            $this->redirect("member", "profile");
         } else {
             (new View("index"))->show();
         }
