@@ -1,11 +1,11 @@
 <?php
 
 require_once "framework/Model.php";
-//require_once "Message.php";
+require_once "Post.php";
 
 class User extends Model {
 
-	public $userId;
+	//public $userId;
     public $userName;
     public $hashed_password;
     public $fullName;
@@ -37,6 +37,16 @@ class User extends Model {
         }
     }
 	
+	
+	public static function get_id_by_userName($userName) {
+        $query = self::execute("SELECT * FROM User where UserName = :userName", array("userName"=>$userName));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return $data["UserId"];
+        }
+    }
 	
 	//renvoie un tableau d'erreur(s) 
     //le tableau est vide s'il n'y a pas d'erreur.

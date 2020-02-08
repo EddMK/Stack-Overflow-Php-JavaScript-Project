@@ -47,7 +47,7 @@ class ControllerUser extends Controller {
             $userName = trim($_POST['userName']);
             $password = $_POST['password'];
             $password_confirm = $_POST['password_confirm'];
-			$fullName = trim($_POST['fullName']);
+			$fullName = $_POST['fullName'];
 			$email = $_POST['email'];
 
             $user = new User($userName, Tools::my_hash($password),$fullName,$email);
