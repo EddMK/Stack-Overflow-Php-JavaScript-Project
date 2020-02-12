@@ -48,6 +48,26 @@ class User extends Model {
         }
     }
 	
+	public function get_user_by_id($userid){
+		$query = self::execute("SELECT * FROM User where UserId = :userid", array("userid"=>$userid));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"]);
+        }
+	}
+	
+	public function get_id() {
+        $query = self::execute("SELECT * FROM User where UserName = :userName", array("userName"=>$this->userName));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return $data["UserId"];
+        }
+    }
+	
 	//renvoie un tableau d'erreur(s) 
     //le tableau est vide s'il n'y a pas d'erreur.
     //ne s'occupe que de la validation "métier" des champs obligatoires (le pseudo)
