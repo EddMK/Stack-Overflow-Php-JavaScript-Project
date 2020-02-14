@@ -9,8 +9,10 @@
     </head>
     <body>
         <div class="title"><?= $user->userName ?></div>
-		<a href="member/logout">Log Out</a>
-		<a href="post/ask">Ask a question</a>
-		<a href="post/show">Questions</a>
+		<div class="menu">
+			<a href="member/logout">Log Out</a>
+			<a href="post/ask">Ask a question</a>
+			<a href="post/show">Questions</a>
+		</div>	
     </body>
 </html>
