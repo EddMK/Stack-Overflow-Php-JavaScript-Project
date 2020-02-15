@@ -11,13 +11,13 @@
         <div class="main">
             <form id="message_form" action="post/ask" method="post">
                 Title
-				<input id="title" name="title" type="text" value="<?= $title ?>"><br>
+				<input id="title" name="title" type="text"><br>
 				Body
 				<textarea id="body" name="body" rows='3'></textarea><br>
 				<input id="post" type="submit" value="Post">
             </form>          
         </div>
-		<a href="member/profile">Profile</a>
+		<a href="post/index">Back</a>
 		<div class='errors'>
 			<?php if ($errors==""){ ?>               
 					<p>Well added</p>         

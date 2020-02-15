@@ -24,13 +24,15 @@
 			<?php } ?>
 			<h3>Date :</h3>
 			<p><?= $question->get_ago() ?></p>
-			<h3>Vote :</h3>
-			<form action="vote/index/<?= $question->get_postid() ?>" method="POST">
-					<input type="radio" name="Genre" value=1 <?php if($question->getLastVote($authorId,$question->get_postid()) == 1){ echo "checked";} ?> > +1<br>
-					<input type="radio" name="Genre" value=2> 0<br>
-					<input type="radio" name="Genre" value=-1 <?php if($question->getLastVote($authorId,$question->get_postid()) == -1){ echo "checked";} ?>> -1<br>
-					<input type="submit" value="Envoyer">
-			</form>
+			<?php if($user){    ?>
+				<h3>Vote :</h3>
+				<form action="vote/index/<?= $question->get_postid() ?>" method="POST">
+						<input type="radio" name="Genre" value=1 <?php if($question->getLastVote($authorId,$question->get_postid()) == 1){ echo "checked";} ?> > +1<br>
+						<input type="radio" name="Genre" value=2> 0<br>
+						<input type="radio" name="Genre" value=-1 <?php if($question->getLastVote($authorId,$question->get_postid()) == -1){ echo "checked";} ?>> -1<br>
+						<input type="submit" value="Envoyer">
+				</form>
+			<?php }    ?>
 			<p>___________________________________________________________</p>
 		</div>
 		<div class = "Reponses">
@@ -47,27 +49,27 @@
 					<h3>Date :</h3>
 					<p><?= $reponse->get_ago() ?></p>
 					<p><?php var_dump($reponse->get_answerid())?></p>
-					<h3>Vote :</h3>
-					<form action="vote/index/<?= $reponse->get_answerid() ?>/<?= $reponse->parentId ?> " method="POST">
-						<input type="radio" name="Genre" value=1 <?php if($reponse->getLastVote($authorId,$reponse->get_answerid()) == 1){ echo "checked";} ?> > +1<br>
-						<input type="radio" name="Genre" value=2> 0<br>
-						<input type="radio" name="Genre" value=-1 <?php if($reponse->getLastVote($authorId,$reponse->get_answerid()) == -1){ echo "checked";} ?>> -1<br>
-						<input type="submit" value="Envoyer">
-					</form>
+					<?php if($user){    ?>
+						<h3>Vote :</h3>
+						<form action="vote/index/<?= $reponse->get_answerid() ?>/<?= $reponse->parentId ?> " method="POST">
+							<input type="radio" name="Genre" value=1 <?php if($reponse->getLastVote($authorId,$reponse->get_answerid()) == 1){ echo "checked";} ?> > +1<br>
+							<input type="radio" name="Genre" value=2> 0<br>
+							<input type="radio" name="Genre" value=-1 <?php if($reponse->getLastVote($authorId,$reponse->get_answerid()) == -1){ echo "checked";} ?>> -1<br>
+							<input type="submit" value="Envoyer">
+						</form>
+					<?php }    ?>
 					<p>___________________________________________________________</p>
 			<?php } ?>
 		</div>
-		<div class = "error">
-			<?php if($error != ""){ ?>
-				<?= $error ?>
-			<?php } ?>
-		</div>
-		<div class = "Repondre">
-			<form id="repondre_form" action="post/show/<?= $question->get_postid() ?>" method="post">
-				Ta réponse
-				<textarea id="answer" name="answer" rows='3'></textarea><br>
-				<input id="post" type="submit" value="Repond">
-            </form>
-		</div>
+		<?php if($user){ ?>
+			<div class = "Repondre">
+				<form id="repondre_form" action="post/show/<?= $question->get_postid() ?>" method="post">
+					Ta réponse
+					<textarea id="answer" name="answer" rows='3'></textarea><br>
+					<input id="post" type="submit" value="Repond">
+				</form>
+			</div>
+		<?php }    ?>
+		<a href="post/index">Back</a>
     </body>
 </html>

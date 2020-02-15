@@ -56,6 +56,16 @@ class Post extends Model {
         return $posts;
     }
 	
+	public static function get_questions_index() {
+        $query = self::execute("select * from Post where Title IS NOT NULL and Title <>'' order by Timestamp DESC", array());
+        $data = $query->fetchAll();
+        $posts = [];
+        foreach ($data as $row) {
+            $posts[] = new Post($row['AuthorId'], $row['Title'], $row['Body'], $row['AcceptedAnswerId'], $row['ParentId']);
+        }
+        return $posts;
+    }
+	
 	public static function get_post($postid){
 		$post = "";
 		$query = self::execute("SELECT * FROM Post where PostId = :postid", array("postid"=>$postid));

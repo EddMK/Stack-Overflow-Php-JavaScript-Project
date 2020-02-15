@@ -9,11 +9,13 @@ class ControllerUser extends Controller {
     //si l'utilisateur est conecté, redirige vers son profil.
     //sinon, produit la vue d'accueil.
     public function index() {
-        if ($this->user_logged()) {
+        /*if ($this->user_logged()) {
             $this->redirect("member", "profile");
         } else {
             (new View("index"))->show();
-        }
+        }*/
+		
+		$this->redirect("post", "index");
     }
 
     //gestion de la connexion d'un utilisateur
