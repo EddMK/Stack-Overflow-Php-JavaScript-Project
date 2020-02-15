@@ -78,6 +78,11 @@ class Post extends Model {
 		return $post;
 	}
 	
+	public static function addAccepterAnswer($questionId,$answerId){
+		self::execute("UPDATE Post SET AcceptedAnswerId=:answerId WHERE PostId=:questionId", 
+		array("answerId"=>$answerId, "questionId"=>$questionId));
+	}
+	
 	public function get_postid(){
 		$query = self::execute("SELECT * FROM Post where Title = :title", array("title"=>$this->title));
         $data = $query->fetch(); // un seul résultat au maximum
@@ -101,8 +106,16 @@ class Post extends Model {
 	}
 	
 	public function get_answers($question){//Attention à trier les réponses !!!
-		$query = self::execute("select * from Post where ParentId = :postid", array("postid" => $question->get_postid()));
-        $data = $query->fetchAll();
+		if($question->acceptedAnswerId == NULL){
+			$query = self::execute("select * from Post where ParentId = :postid", 
+			array("postid" => $question->get_postid()));
+        }else{
+			$query = self::execute("select * from Post where ParentId = :postid  and PostId <> :accepterAnswerId", 
+			array("postid" => $question->get_postid(),"accepterAnswerId" => $question->acceptedAnswerId));
+		}
+		
+		
+		$data = $query->fetchAll();
         $posts = [];
         foreach ($data as $row) {
             $posts[] = new Post($row['AuthorId'], $row['Title'], $row['Body'], $row['AcceptedAnswerId'], $row['ParentId']);

@@ -39,6 +39,10 @@ class ControllerPost extends Controller {
 	public function show(){
 		$user = $this->get_user_or_false();
 		$question = Post::get_post($_GET["param1"]);
+		$answerAccepted = "";
+		if($question->acceptedAnswerId !== NULL){
+			$answerAccepted = Post::get_post($question->acceptedAnswerId);
+		}
 		var_dump($user);
 		$authorId ="";
 		if($user){
@@ -48,10 +52,27 @@ class ControllerPost extends Controller {
 			$reponse=$_POST['answer'];
 			$post = new Post($authorId,NULL,$reponse,NULL,$question->get_postid());
 			$post->addPost();
-		}	
-		
+		}			
 		$reponses = $question->get_answers($question);
-		(new View("question"))->show(array("question" => $question,"reponses" => $reponses,"authorId" => $authorId,"user" => $user ));
+		(new View("question"))->show(array("question" => $question,"reponses" => $reponses,"authorId" => $authorId,
+				"user" => $user,"answerAccepted" => $answerAccepted ));
+	}
+	
+	
+	public function accept(){
+		$questionId="";
+		$answerId="";
+		if(isset($_POST['accepter'])){
+            $questionId=$_GET["param1"];
+			$answerId=$_GET["param2"];
+			Post::addAccepterAnswer($questionId,$answerId);
+        }
+		if(isset($_POST['decliner'])){
+            $questionId=$_GET["param1"];
+			$answerId=NULL;
+			Post::addAccepterAnswer($questionId,$answerId);
+        }
+		$this->redirect("post","show",$questionId);		
 	}
 	
 	

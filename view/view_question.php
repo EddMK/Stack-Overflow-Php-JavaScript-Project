@@ -35,8 +35,39 @@
 			<?php }    ?>
 			<p>___________________________________________________________</p>
 		</div>
-		<div class = "Reponses">
-			<h1>Réponse(s)</h1>
+		<h1>Réponse(s)</h1>
+		<div class = "Reponse_favorite">		
+			<?php if($answerAccepted !== ""){ ?>
+				<h2>Réponse acceptée</h2>
+				<p><?= $answerAccepted->body ?></p>
+					<p>Written by <?= $answerAccepted->get_author_by_authorId()->userName ?></p>
+					<h3>Scores :</h3>
+						<?php if($answerAccepted->get_score_answer() == NULL){ ?>
+							<p>0</p>
+						<?php }else{ ?>
+							<p><?= $answerAccepted->get_score_answer() ?></p>
+						<?php } ?>
+					<h3>Date :</h3>
+					<p><?= $answerAccepted->get_ago() ?></p>
+					<p><?php var_dump($answerAccepted->get_answerid())?></p>
+					<?php if($user){    ?>
+						<h3>Vote :</h3>
+						<form action="vote/index/<?= $answerAccepted->get_answerid() ?>/<?= $answerAccepted->parentId ?> " method="POST">
+							<input type="radio" name="Genre" value=1 <?php if($answerAccepted->getLastVote($authorId,$answerAccepted->get_answerid()) == 1){ echo "checked";} ?> > +1<br>
+							<input type="radio" name="Genre" value=2> 0<br>
+							<input type="radio" name="Genre" value=-1 <?php if($answerAccepted->getLastVote($authorId,$answerAccepted->get_answerid()) == -1){ echo "checked";} ?>> -1<br>
+							<input type="submit" value="Envoyer">
+						</form>
+					<?php }  ?>
+					<?php if($answerAccepted->authorId == $user->get_id()) {   ?>
+						<form action="post/accept/<?= $question->get_postid() ?>/<?= $answerAccepted->get_answerid() ?>" method="POST">
+							<input type="submit" name="decliner" value="decliner">
+						</form>
+					<?php }  ?>
+				<p>___________________________________________________________</p>
+			<?php } ?>
+		</div>
+		<div class = "Reponses">			
 			<?php foreach ($reponses as $reponse){ ?>
 					<p><?= $reponse->body ?></p>
 					<p>Written by <?= $reponse->get_author_by_authorId()->userName ?></p>
@@ -57,7 +88,12 @@
 							<input type="radio" name="Genre" value=-1 <?php if($reponse->getLastVote($authorId,$reponse->get_answerid()) == -1){ echo "checked";} ?>> -1<br>
 							<input type="submit" value="Envoyer">
 						</form>
-					<?php }    ?>
+					<?php }  ?>
+					<?php if($reponse->authorId == $user->get_id()) {   ?>
+						<form action="post/accept/<?= $question->get_postid() ?>/<?= $reponse->get_answerid() ?>" method="POST">
+							<input type="submit" name="accepter" value="accepter">
+						</form>
+					<?php }  ?>
 					<p>___________________________________________________________</p>
 			<?php } ?>
 		</div>
