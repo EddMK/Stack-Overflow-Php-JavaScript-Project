@@ -119,7 +119,7 @@ class User extends Model {
 	public function addUser(){
 		//var_dump($this);
         self::execute("INSERT INTO user(UserName,Password,FullName,Email) VALUES(:userName,:password,:fullName,:email)", 
-       array("userName"=>$this->userName, "password"=>$this->hashed_password, "fullName"=>$this->fullName, "email"=>$this->email));
+		array("userName"=>$this->userName, "password"=>$this->hashed_password, "fullName"=>$this->fullName, "email"=>$this->email));
 		return $this;
     }
 	

@@ -24,7 +24,14 @@
 			<?php } ?>
 			<h3>Date :</h3>
 			<p><?= $question->get_ago() ?></p>
-			
+			<h3>Vote :</h3>
+			<form action="vote/index/<?= $question->get_postid() ?>" method="POST">
+					<input type="radio" name="Genre" value=1 <?php if($question->getLastVote($authorId,$question->get_postid()) == 1){ echo "checked";} ?> > +1<br>
+					<input type="radio" name="Genre" value=2> 0<br>
+					<input type="radio" name="Genre" value=-1 <?php if($question->getLastVote($authorId,$question->get_postid()) == -1){ echo "checked";} ?>> -1<br>
+					<input type="submit" value="Envoyer">
+			</form>
+			<p>___________________________________________________________</p>
 		</div>
 		<div class = "Reponses">
 			<h1>Réponse(s)</h1>
@@ -32,13 +39,22 @@
 					<p><?= $reponse->body ?></p>
 					<p>Written by <?= $reponse->get_author_by_authorId()->userName ?></p>
 					<h3>Scores :</h3>
-						<?php if($reponse->get_score() == NULL){ ?>
+						<?php if($reponse->get_score_answer() == NULL){ ?>
 							<p>0</p>
 						<?php }else{ ?>
-							<p><?= $reponse->get_score() ?></p>
+							<p><?= $reponse->get_score_answer() ?></p>
 						<?php } ?>
 					<h3>Date :</h3>
 					<p><?= $reponse->get_ago() ?></p>
+					<p><?php var_dump($reponse->get_answerid())?></p>
+					<h3>Vote :</h3>
+					<form action="vote/index/<?= $reponse->get_answerid() ?>/<?= $reponse->parentId ?> " method="POST">
+						<input type="radio" name="Genre" value=1 <?php if($reponse->getLastVote($authorId,$reponse->get_answerid()) == 1){ echo "checked";} ?> > +1<br>
+						<input type="radio" name="Genre" value=2> 0<br>
+						<input type="radio" name="Genre" value=-1 <?php if($reponse->getLastVote($authorId,$reponse->get_answerid()) == -1){ echo "checked";} ?>> -1<br>
+						<input type="submit" value="Envoyer">
+					</form>
+					<p>___________________________________________________________</p>
 			<?php } ?>
 		</div>
 		<div class = "error">
