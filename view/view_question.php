@@ -36,6 +36,11 @@
 					<form action="post/edit/<?= $question->get_postid() ?>/" method="POST">
 						<input type="submit" name="edit" value="edit">
 					</form>
+					<?php if(empty($reponses)){   ?>
+						<form action="post/confirm_delete/<?= $question->get_postid() ?>/" method="POST">
+							<input type="submit" name="delete" value="delete">
+						</form>
+					<?php }  ?>
 				<?php }  ?>
 			<?php }  ?>
 			<p>___________________________________________________________</p>
@@ -75,6 +80,9 @@
 							<form action="post/edit/<?= $answerAccepted->get_answerid() ?>/" method="POST">
 								<input type="submit" name="edit" value="edit">
 							</form>
+							<form action="post/confirm_delete/<?= $answerAccepted->get_answerid() ?>/" method="POST">
+								<input type="submit" name="delete" value="delete">
+							</form>
 						<?php }  ?>
 					<?php }  ?>
 				<p>___________________________________________________________</p>
@@ -111,6 +119,9 @@
 						<?php if($reponse->authorId == $user->get_id()) {   ?>
 							<form action="post/edit/<?= $reponse->get_answerid() ?>/<?= $reponse->get_answerid() ?> " method="POST">
 								<input type="submit" name="edit" value="edit">
+							</form>
+							<form action="post/confirm_delete/<?= $reponse->get_answerid() ?>/" method="POST">
+								<input type="submit" name="delete" value="delete">
 							</form>
 						<?php }  ?>			
 					<?php }  ?>		

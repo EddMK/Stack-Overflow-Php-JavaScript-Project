@@ -26,6 +26,21 @@ class Vote extends Model {
         }
     }
 	
+	public static function get_vote_by_postid($postId) {
+        $query = self::execute("SELECT * FROM Vote where PostId = :postId", array("postId"=>$postId));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return new Vote($data["UserId"], $data["PostId"], $data["UpDown"]);
+        }
+    }
+	
+	public static function delete_vote_by_postid($postId){
+		self::execute("DELETE FROM vote WHERE PostId = :postId", 
+		array("postId"=>$postId));
+	}
+	
 	public function addVote(){
 		self::execute("INSERT INTO vote(UserId,PostId,UpDown) VALUES(:userId,:postId,:upDown)", 
 		array("userId"=>$this->userId, "postId"=>$this->postId, "upDown"=>$this->upDown));
@@ -37,9 +52,7 @@ class Vote extends Model {
 		array("userId"=>$this->userId, "postId"=>$this->postId));
 		return $this;
 	}
-	
-	//"UPDATE Members SET password=:password, picture_path=:picture, profile=:profile WHERE pseudo=:pseudo "
-	
+		
 	public function updateVote($upDown){
 		self::execute("UPDATE Vote SET UpDown=:upDown WHERE UserId=:userId and PostId=:postId", 
 		array("userId"=>$this->userId, "postId"=>$this->postId, "upDown"=>$upDown));

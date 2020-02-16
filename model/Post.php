@@ -91,6 +91,15 @@ class Post extends Model {
 		array("title"=>$title, "body"=>$body , "return"=>$return, "postid"=>$postid));
 	}
 	
+	public static function deletePost($postid){
+		var_dump(Vote::get_vote_by_postid($postid));
+		if(Vote::get_vote_by_postid($postid) != false){
+			Vote::delete_vote_by_postid($postid);
+		}
+		self::execute("DELETE FROM Post WHERE PostId = :postId", 
+		array("postId"=>$postid));
+	}
+	
 	public function get_postid(){
 		$query = self::execute("SELECT * FROM Post where Title = :title", array("title"=>$this->title));
         $data = $query->fetch(); // un seul résultat au maximum
