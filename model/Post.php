@@ -83,6 +83,14 @@ class Post extends Model {
 		array("answerId"=>$answerId, "questionId"=>$questionId));
 	}
 	
+	public static function editPost($title,$body,$postid){
+		$date = new DateTime();
+		$return = $date->format('Y-m-d H:i:s');
+		var_dump($return);
+		self::execute("UPDATE Post SET Title=:title, Body=:body, Timestamp =:return WHERE PostId=:postid", 
+		array("title"=>$title, "body"=>$body , "return"=>$return, "postid"=>$postid));
+	}
+	
 	public function get_postid(){
 		$query = self::execute("SELECT * FROM Post where Title = :title", array("title"=>$this->title));
         $data = $query->fetch(); // un seul résultat au maximum
@@ -156,7 +164,7 @@ class Post extends Model {
 	public function get_timestamp(){
 		$query = self::execute("SELECT * FROM Post where Body = :body", array("body"=>$this->body));
         $data = $query->fetch(); // un seul résultat au maximum
-		//var_dump($data["Timestamp"]);
+		var_dump($data["Timestamp"]);
         if ($query->rowCount() == 0) {
             return false;
         } else {

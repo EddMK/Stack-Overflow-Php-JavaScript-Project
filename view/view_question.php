@@ -32,7 +32,12 @@
 						<input type="radio" name="Genre" value=-1 <?php if($question->getLastVote($authorId,$question->get_postid()) == -1){ echo "checked";} ?>> -1<br>
 						<input type="submit" value="Envoyer">
 				</form>
-			<?php }    ?>
+				<?php if($question->authorId == $user->get_id()) {   ?>
+					<form action="post/edit/<?= $question->get_postid() ?>/" method="POST">
+						<input type="submit" name="edit" value="edit">
+					</form>
+				<?php }  ?>
+			<?php }  ?>
 			<p>___________________________________________________________</p>
 		</div>
 		<h1>Réponse(s)</h1>
@@ -40,7 +45,8 @@
 			<?php if($answerAccepted !== ""){ ?>
 				<h2>Réponse acceptée</h2>
 				<p><?= $answerAccepted->body ?></p>
-					<p>Written by <?= $answerAccepted->get_author_by_authorId()->userName ?></p>
+					<h3>Written by </h3>
+					<p><?= $answerAccepted->get_author_by_authorId()->userName ?></p>
 					<h3>Scores :</h3>
 						<?php if($answerAccepted->get_score_answer() == NULL){ ?>
 							<p>0</p>
@@ -59,18 +65,27 @@
 							<input type="submit" value="Envoyer">
 						</form>
 					<?php }  ?>
-					<?php if($answerAccepted->authorId == $user->get_id()) {   ?>
-						<form action="post/accept/<?= $question->get_postid() ?>/<?= $answerAccepted->get_answerid() ?>" method="POST">
-							<input type="submit" name="decliner" value="decliner">
-						</form>
+					<?php if($user){   ?>
+						<?php if($answerAccepted->authorId == $user->get_id()) {   ?>
+							<form action="post/accept/<?= $question->get_postid() ?>/<?= $answerAccepted->get_answerid() ?>" method="POST">
+								<input type="submit" name="decliner" value="decliner">
+							</form>
+						<?php }  ?>					
+						<?php if($answerAccepted->authorId == $user->get_id()) {   ?>
+							<form action="post/edit/<?= $answerAccepted->get_answerid() ?>/" method="POST">
+								<input type="submit" name="edit" value="edit">
+							</form>
+						<?php }  ?>
 					<?php }  ?>
 				<p>___________________________________________________________</p>
 			<?php } ?>
 		</div>
 		<div class = "Reponses">			
 			<?php foreach ($reponses as $reponse){ ?>
+					<h2>Réponse</h2>
 					<p><?= $reponse->body ?></p>
-					<p>Written by <?= $reponse->get_author_by_authorId()->userName ?></p>
+					<h3>Written by</h3> 
+					<p><?= $reponse->get_author_by_authorId()->userName ?></p>
 					<h3>Scores :</h3>
 						<?php if($reponse->get_score_answer() == NULL){ ?>
 							<p>0</p>
@@ -88,12 +103,17 @@
 							<input type="radio" name="Genre" value=-1 <?php if($reponse->getLastVote($authorId,$reponse->get_answerid()) == -1){ echo "checked";} ?>> -1<br>
 							<input type="submit" value="Envoyer">
 						</form>
-					<?php }  ?>
-					<?php if($reponse->authorId == $user->get_id()) {   ?>
-						<form action="post/accept/<?= $question->get_postid() ?>/<?= $reponse->get_answerid() ?>" method="POST">
-							<input type="submit" name="accepter" value="accepter">
-						</form>
-					<?php }  ?>
+						<?php if($question->authorId == $user->get_id()) {   ?>
+							<form action="post/accept/<?= $question->get_postid() ?>/<?= $reponse->get_answerid() ?>" method="POST">
+								<input type="submit" name="accepter" value="accepter">
+							</form>
+						<?php }  ?>				
+						<?php if($reponse->authorId == $user->get_id()) {   ?>
+							<form action="post/edit/<?= $reponse->get_answerid() ?>/<?= $reponse->get_answerid() ?> " method="POST">
+								<input type="submit" name="edit" value="edit">
+							</form>
+						<?php }  ?>			
+					<?php }  ?>		
 					<p>___________________________________________________________</p>
 			<?php } ?>
 		</div>

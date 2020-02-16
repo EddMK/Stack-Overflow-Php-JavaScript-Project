@@ -75,6 +75,30 @@ class ControllerPost extends Controller {
 		$this->redirect("post","show",$questionId);		
 	}
 	
+	public function edit(){
+		$postid = $_GET["param1"];
+		$title = "";
+		$body = "";
+		if(isset($_POST['modifier'])){
+			$title =$_POST['title'];
+			$body = $_POST['body'];		
+			Post::editPost($title,$body,$postid);
+			if($title =="" || $title == NULL){
+				$post = Post::get_post($postid);
+				$this->redirect("post","show", $post->parentId);
+			}else{
+				$this->redirect("post","show",$postid);
+			}
+			$this->redirect("post","show",$questionId);
+		}		
+		if(isset($_POST['edit'])){
+			$post = Post::get_post($_GET["param1"]);		
+			$title = $post->title;
+			$body = $post->body;	
+            (new View("edit"))->show(array("title" => $title, "body" => $body, "postid" => $postid));
+        }
+	}
+	
 	
 	
 	
