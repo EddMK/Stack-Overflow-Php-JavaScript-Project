@@ -79,16 +79,16 @@ class User extends Model {
             $errors[] = "User Name is required.";
         } if (!(isset($this->userName) && is_string($this->userName) && strlen($this->userName) >= 3)) {
             $errors[] = "User Name length must be more than 3.";
-        } if (!(isset($this->userName) && is_string($this->userName) && preg_match("/^[A-Z][a-zA-Z]*$/", $this->userName))) {
+        } /*if (!(isset($this->userName) && is_string($this->userName) && preg_match("/[a-zA-Z]*$/", $this->userName))) {
             $errors[] = "User Name must start by a letter and must contain only letters.";
-        }
+        }*/
 		
 		if (!(isset($this->fullName) && is_string($this->fullName) && strlen($this->fullName) > 0)) {
             $errors[] = "Full Name is required.";
         } if (!(isset($this->fullName) && is_string($this->fullName) && strlen($this->fullName) >= 3)) {
             $errors[] = "Full Name length must be more than 3.";
-        } if (!(isset($this->fullName) && is_string($this->fullName) && preg_match("/^[A-Z][a-zA-Z]*$/", $this->fullName))) {
-            $errors[] = "Full Name must start by a letter and must contain only letters.";
+        } if (!(isset($this->fullName) && is_string($this->fullName) && preg_match("/^[A-Z][a-zA-Z\s-]*$/", $this->fullName))) {
+            $errors[] = "Full Name must start by a uppercase letter and must contain only letters.";
         }
 		
 		if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
@@ -143,7 +143,7 @@ class User extends Model {
             if (!self::check_password($password, $user->hashed_password)) {
                 $errors[] = "Wrong password. Please try again.";
             }
-        } else {
+        } else { 
             $errors[] = "Can't find a member with the pseudo '$pseudo'. Please sign up.";
         }
         return $errors;

@@ -38,12 +38,12 @@ class ControllerPost extends Controller {
 	
 	public function show(){
 		$user = $this->get_user_or_false();
+		//un if comme condition if(isset($_GET["param1"]))
 		$question = Post::get_post($_GET["param1"]);
 		$answerAccepted = "";
 		if($question->acceptedAnswerId !== NULL){
 			$answerAccepted = Post::get_post($question->acceptedAnswerId);
 		}
-		var_dump($user);
 		$authorId ="";
 		if($user){
 			$authorId = User::get_id_by_userName($user->userName);

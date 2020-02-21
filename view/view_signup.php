@@ -17,7 +17,7 @@
             <br><br>
             <form id="signupForm" action="user/signup" method="post">
                 <table>
-                    <tr>
+					<tr>
                         <td>Username:</td>
                         <td><input id="userName" name="userName" type="text" size="16" value="<?= $userName ?>"></td>
                         <td class="errors" id="errPseudo"></td>
@@ -34,7 +34,7 @@
                     </tr>
 					<tr>
                         <td>Full Name:</td>
-                        <td><input id="fullName" name="fullName" size="16" type="text" value="<?= $fullName ?>"></td>
+                        <td><input id="fullName" name="fullName" type="text" value="<?= $fullName ?>"></td>
                         <td class="errors" id="errFullName"></td>
                     </tr>
 					<tr>

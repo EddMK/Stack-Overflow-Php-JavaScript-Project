@@ -124,19 +124,29 @@ class Post extends Model {
 	
 	public function get_answers($question){//Attention à trier les réponses !!!
 		if($question->acceptedAnswerId == NULL){
-			$query = self::execute("select * from Post where ParentId = :postid", 
+			$query = self::execute("select post.AuthorId, post.Title,post.Body,post.AcceptedAnswerId, post.ParentId from post, vote where ParentId = :postid and post.PostId=vote.PostId
+			Group by vote.PostId ORDER BY SUM(vote.UpDown) DESC,post.Timestamp DESC ", 
 			array("postid" => $question->get_postid()));
         }else{
-			$query = self::execute("select * from Post where ParentId = :postid  and PostId <> :accepterAnswerId", 
+			$query = self::execute("select post.AuthorId, post.Title,post.Body,post.AcceptedAnswerId, post.ParentId from post, vote where ParentId = :postid  and PostId <> :accepterAnswerId
+			post.PostId=vote.PostId Group by vote.PostId ORDER BY SUM(vote.UpDown) DESC,post.Timestamp DESC", 
 			array("postid" => $question->get_postid(),"accepterAnswerId" => $question->acceptedAnswerId));
 		}
-		
+		/*
+		Select post.PostId, SUM(vote.UpDown) 
+		FRom post, vote 
+		Where post.PostId=vote.PostId 
+		Group by vote.PostId 
+		ORDER BY SUM(vote.UpDown) DESC,post.Timestamp DESC 		
+		*/
 		
 		$data = $query->fetchAll();
+		var_dump($data);
         $posts = [];
         foreach ($data as $row) {
             $posts[] = new Post($row['AuthorId'], $row['Title'], $row['Body'], $row['AcceptedAnswerId'], $row['ParentId']);
         }
+		var_dump($posts);
         return $posts;
 	}
 	

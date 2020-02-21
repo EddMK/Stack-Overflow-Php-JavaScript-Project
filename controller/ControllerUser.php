@@ -58,7 +58,7 @@ class ControllerUser extends Controller {
             $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
 
             if (count($errors) == 0) { 
-                $user->addUser(); //sauve l'utilisateur
+                $user->addUser();  
                 $this->log_user($user);
             }
         }
