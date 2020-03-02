@@ -124,6 +124,30 @@ class Post extends Model {
 	
 	public function get_answers($question){//Attention à trier les réponses !!!
 		if($question->acceptedAnswerId == NULL){
+			$query = self::execute("SELECT post.*, max_score 
+									FROM post, ( SELECT postid, max(score) max_score 
+												FROM ( SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score 
+														FROM post LEFT JOIN vote ON vote.postid = post.postid 
+														WHERE post.ParentId = :postid 
+														GROUP BY post.postid ) 
+												AS tbl1 GROUP by postid ) AS q1 
+									WHERE post.postid = q1.postid 
+									ORDER BY q1.max_score DESC, timestamp DESC", 
+			array("postid" => $question->get_postid()));
+        }else{
+			$query = self::execute("SELECT post.*, max_score 
+									FROM post, ( SELECT postid, max(score) max_score 
+												FROM ( SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score 
+														FROM post LEFT JOIN vote ON vote.postid = post.postid 
+														WHERE post.ParentId = :postid  and post.PostId<>:accepterAnswerId 
+														GROUP BY post.postid )
+												AS tbl1 GROUP by postid ) AS q1 
+									WHERE post.postid = q1.postid 
+									ORDER BY q1.max_score DESC, timestamp DESC", 
+			array("postid" => $question->get_postid(),"accepterAnswerId" => $question->acceptedAnswerId));
+		}		
+		/*
+		if($question->acceptedAnswerId == NULL){
 			$query = self::execute("select post.AuthorId, post.Title,post.Body,post.AcceptedAnswerId, post.ParentId from post, vote where ParentId = :postid and post.PostId=vote.PostId
 			Group by vote.PostId ORDER BY SUM(vote.UpDown) DESC,post.Timestamp DESC ", 
 			array("postid" => $question->get_postid()));
@@ -132,12 +156,25 @@ class Post extends Model {
 			post.PostId=vote.PostId Group by vote.PostId ORDER BY SUM(vote.UpDown) DESC,post.Timestamp DESC", 
 			array("postid" => $question->get_postid(),"accepterAnswerId" => $question->acceptedAnswerId));
 		}
+		*/
 		/*
 		Select post.PostId, SUM(vote.UpDown) 
 		FRom post, vote 
 		Where post.PostId=vote.PostId 
 		Group by vote.PostId 
 		ORDER BY SUM(vote.UpDown) DESC,post.Timestamp DESC 		
+		*/
+		
+		/*
+		SELECT post.*, max_score 
+		FROM post, ( SELECT postid, max(score) max_score 
+					FROM ( SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score 
+							FROM post LEFT JOIN vote ON vote.postid = post.postid 
+							WHERE post.ParentId = :postid GROUP BY post.postid ) 
+					AS tbl1 GROUP by postid ) AS q1 
+		WHERE post.postid = q1.postid 
+		ORDER BY q1.max_score DESC, timestamp DESC
+
 		*/
 		
 		$data = $query->fetchAll();
