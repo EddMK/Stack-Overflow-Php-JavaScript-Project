@@ -56,7 +56,9 @@ class Post extends Model {
         return $posts;
     }
 	
-	public static function get_questions_index() {
+	// TRIER QUESTIONS
+	
+	public static function get_questions_newest() {
         $query = self::execute("select * from Post where Title IS NOT NULL and Title <>'' order by Timestamp DESC", array());
         $data = $query->fetchAll();
         $posts = [];
@@ -65,6 +67,51 @@ class Post extends Model {
         }
         return $posts;
     }
+	
+	public static function get_questions_votes() {
+        $query = self::execute("SELECT post.*, max_score
+
+FROM post, (
+
+    SELECT parentid, max(score) max_score
+
+    FROM (
+
+        SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score
+
+        FROM post LEFT JOIN vote ON vote.postid = post.postid
+
+        GROUP BY post.postid
+
+    ) AS tbl1
+
+    GROUP by parentid
+
+) AS q1
+
+WHERE post.postid = q1.parentid
+
+ORDER BY q1.max_score DESC, timestamp DESC", array());
+        $data = $query->fetchAll();
+        $posts = [];
+        foreach ($data as $row) {
+            $posts[] = new Post($row['AuthorId'], $row['Title'], $row['Body'], $row['AcceptedAnswerId'], $row['ParentId']);
+        }
+        return $posts;
+    }
+	
+	public static function get_questions_unanswered () {
+        $query = self::execute("select * from Post where Title IS NOT NULL and Title <>''  and AcceptedAnswerId IS NULL order by Timestamp DESC", array());
+        $data = $query->fetchAll();
+        $posts = [];
+        foreach ($data as $row) {
+            $posts[] = new Post($row['AuthorId'], $row['Title'], $row['Body'], $row['AcceptedAnswerId'], $row['ParentId']);
+        }
+        return $posts;
+    }
+	
+	// FIN 
+	
 	
 	public static function get_post($postid){
 		$post = "";

@@ -9,10 +9,26 @@ require_once 'framework/Controller.php';
 class ControllerPost extends Controller {
 
 	public function index() {
-        //(new View("ask"))->show(array("title" => $title, "body" => $body));
 		$user= $this->get_user_or_false();
-		$posts=[];			
-		$posts = Post::get_questions_index(); 
+		$menu="";
+		if(isset($_GET["param1"])){
+			$menu = $_GET["param1"];		
+		}
+		else{
+			$menu = "newest";
+		}
+		
+		$posts=[];
+		if($menu == "newest"){
+			$posts = Post::get_questions_newest();
+		}else if($menu == "votes"){
+			$posts = Post::get_questions_votes();
+		}else if($menu == "unanswered"){
+			$posts = Post::get_questions_unanswered();
+		}
+		
+					
+		 
 		(new View("index"))->show(array("posts" => $posts,"user" => $user));		
     }
 
