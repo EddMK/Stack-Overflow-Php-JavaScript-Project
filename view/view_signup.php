@@ -5,16 +5,18 @@
         <title>Sign Up</title>
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-        <div class="title">Sign Up</div>
-        <div class="menu">
-            <a href="index.php">Home</a>
+        <div class="header">
+			<a href="post/index" class="logo">Stuck Overflow</a>
+			<div class = "headerRight">
+				<a href="user/login"><i class="fas fa-sign-in-alt"  style="font-size:40px;color:black"></i></a>
+				<a href="user/signup"><i class="fas fa-user-plus"  style="font-size:40px;color:black;padding-left:20px"></i></a>
+			</div>
         </div>
-        <div class="main">
-            Please enter your details to sign up :
-            <br><br>
+        <div class="mainlogin">
+            <h1 class="title">Sign up</h1>
             <form id="signupForm" action="user/signup" method="post">
                 <table>
 					<tr>

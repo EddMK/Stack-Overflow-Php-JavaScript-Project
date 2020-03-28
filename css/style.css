@@ -1,18 +1,178 @@
+body{
+    background: #cccccc;
+	background-image : url("fondecran.jpg");
+	background-color: #cccccc;
+	background-size: cover;
+}
+
+.header {
+  overflow: hidden;
+  padding: 20px 10px;
+  background-color : rgba(224, 224, 224, 0.3);*/
+}
+
+.logo{
+	float : left;
+	font-family: Impact, Charcoal;
+	color : orangeRed;
+	text-decoration: none;
+	font-size: 50px;
+}
+
+#main{
+	background-color : white;	
+	margin-left : 10%; 
+	margin-right : 10%;
+	position : relative;
+}
+
+.headerRight{
+	float : right;
+}
+
+.search{
+	position : absolute;
+	right : 0px;
+}
+
+.textHeader{
+	font-size : 25px;
+}
+
+
+
+
+
+
+
+
+.menu div{
+	display : inline-block;
+	
+}
+
+.menu{
+	background-color: #333;
+	height : 40px;
+}
+
+
 .ul_menu_questions{
 	list-style: none;
+	margin : 0;
+	padding : 0;
+	font-family : Impact;
+	font-size:33px;
 	
+	
+}
+
+.Search{
+	height : 10px;
+	width :  200px;
+	background-image: url('searchicon.png');
+	background-position: 10px 10px; 
+	background-repeat: no-repeat;
+	padding: 12px 20px 12px 40px;
 }
 
 .ul_menu_questions li{
 	display : inline-block;
-
+	border-right: 1px solid #bbb;
 }
 
 .ul_menu_questions li a{
 	text-decoration : none;
-	color : red;
+	color : black;
 }
 
 .ul_menu_questions li a.current{
 	color : yellow;
 }
+
+
+
+
+
+
+
+
+
+
+.questions{
+	background-color : red;
+	list-style: none;
+	margin : 0;
+	padding : 0;
+}
+
+.questions li{
+	border: 1px solid #bbb;
+	margin : 0;
+	
+}
+
+
+/*     Sign in     */
+
+.mainlogin{
+	background-color: green;
+	margin-left : 35%;
+	margin-right : 35%;
+	border-style : inset;
+	padding-bottom : 15px;
+	padding-left : 10px;
+}
+
+.title{
+	text-align: center;
+}
+
+
+
+
+
+/* Ask Question   */
+
+.mainAsk{
+	color : white;
+	font-size: 25px;
+}
+
+
+.mainAsk input[type=text], textarea{
+	width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+
+}
+
+.mainAsk label {
+display: block;
+margin-bottom: 10px;
+}
+
+
+.mainAsk textarea{
+	height : 200px;
+}
+
+.mainAsk input[type=submit]{
+	height : 25px;
+	width : 10%;
+	color : white;
+	background-color : rgb(27, 79, 8);
+}
+
+.errors{
+	color : white;
+	font-size: 20px;
+}
+
+
+
+

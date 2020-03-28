@@ -21,17 +21,26 @@ class Post extends Model {
 		$this->parentId = $parentId;
     }
 	
-	public function validate(){
-		$errors="";
+	public function validate_question(){
+		$errors = array();
 		if(!(isset($this->title) && is_string($this->title) && strlen($this->title) > 0)){
-            $errors = "Title must be filled";
+            $errors[] = "Title must be filled";	
         }
+		if(strlen(trim($this->title)) == 0){
+			$errors[] = "Title contains only spaces";
+		}
+		if (!(isset($this->body) && is_string($this->body) && strlen($this->body) > 0)){
+            $errors[] = "Body is required.";
+		}
+		if(strlen(trim($this->body)) == 0){
+			$errors[] = "Body contains only spaces";
+		}
 		return $errors;
 	}
 	
 	
 	public function addPost(){
-		//var_dump($this);
+		var_dump($this);
 		self::execute("INSERT INTO post(AuthorId,Title,Body,AcceptedAnswerId,ParentId) VALUES(:authorId,:title,:body,:acceptedAnswerId,:parentId)", 
 		array("authorId"=>$this->authorId, "title"=>$this->title, "body"=>$this->body, "acceptedAnswerId"=>$this->acceptedAnswerId, "parentId"=>$this->parentId));
 		return $this;
@@ -267,7 +276,7 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
 	public function get_timestamp(){
 		$query = self::execute("SELECT * FROM Post where Body = :body", array("body"=>$this->body));
         $data = $query->fetch(); // un seul résultat au maximum
-		var_dump($data["Timestamp"]);
+		//var_dump($data["Timestamp"]);
         if ($query->rowCount() == 0) {
             return false;
         } else {

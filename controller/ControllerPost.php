@@ -11,20 +11,28 @@ class ControllerPost extends Controller {
 	public function index() {
 		$user= $this->get_user_or_false();
 		$menu="";
-		if(isset($_GET["param1"])){
-			$menu = $_GET["param1"];		
+		$search="";
+		
+		if(isset($_POST['search'])){
+			$search=$_POST['search'];
+			
 		}
 		else{
-			$menu = "newest";
-		}
+			if(isset($_GET["param1"])){
+				$menu = $_GET["param1"];		
+			}
+			else{
+				$menu = "newest";
+			}
 		
-		$posts=[];
-		if($menu == "newest"){
-			$posts = Post::get_questions_newest();
-		}else if($menu == "votes"){
-			$posts = Post::get_questions_votes();
-		}else if($menu == "unanswered"){
-			$posts = Post::get_questions_unanswered();
+			$posts=[];
+			if($menu == "newest"){
+				$posts = Post::get_questions_newest();
+			}else if($menu == "votes"){
+				$posts = Post::get_questions_votes();
+			}else if($menu == "unanswered"){
+				$posts = Post::get_questions_unanswered();
+			}
 		}
 		
 					
@@ -35,21 +43,35 @@ class ControllerPost extends Controller {
 	public function ask(){
 		$title="";
 		$body="";
-		$errors="";
+		$errors = [];
+		$checked = false;
+		$user = $this->get_user_or_redirect();
 		
         if (isset($_POST['body']) && isset($_POST['title'])) {
             $body = $_POST['body'];
-			$title = $_POST['title'];
-			$user = $this->get_user_or_redirect();
+			$title = $_POST['title'];		
 			$authorId = User::get_id_by_userName($user->userName);
-            $post = new Post($authorId,$title,$body ,NULL,NULL);
-            $errors = $post->validate();
-            if($errors==""){
+            $post = new Post($authorId,$title,$body ,NULL,NULL);			
+            
+			$errors = $post->validate_question();
+			$checked = true;
+            if(count($errors) == 0){
                 $post->addPost(); 				
             }
         }
-	
-		(new View("ask"))->show(array("title" => $title, "body" => $body, "errors" => $errors));
+		
+		
+		if(($checked == true) && (count($errors) == 0)){
+			$reponses = null;
+			$authorId = null;
+			$answerAccepted = null;
+			
+			(new View("question"))->show(array("question" => $post,"reponses" => $reponses,"authorId" => $authorId,
+				"user" => $user,"answerAccepted" => $answerAccepted ));
+			
+        }else{
+			(new View("ask"))->show(array("title" => $title, "body" => $body,"user" => $user, "errors" => $errors));
+		}
 	}
 	
 	public function show(){
