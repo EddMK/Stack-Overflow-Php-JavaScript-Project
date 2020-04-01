@@ -1,7 +1,6 @@
 body{
-    background: #cccccc;
-	background-image : url("fondecran.jpg");
-	background-color: #cccccc;
+    background: white;
+	/* background-image : url("fondecran.jpg");*/
 	background-size: cover;
 }
 
@@ -169,10 +168,80 @@ margin-bottom: 10px;
 }
 
 .errors{
-	color : white;
+	color : red;
 	font-size: 20px;
 }
 
 
 
 
+/*  Question page */
+
+.Post{
+	position : relative;
+	background-color : blue;
+	padding-bottom : 5%;
+}
+
+.titleQuestion{
+	font-size : 70px;
+	margin-bottom: 0px;
+}
+
+.asked{
+	border-bottom : 3px solid;
+	font-size : 15px;
+}
+
+.body{
+	font-size : 25px;
+}
+
+.score{
+	text-align : center;
+}
+
+.vote{
+	width : 3%;
+	position :absolute ;
+	top : 7%;
+	left : 1%;
+	background-color : green;
+}
+
+.rightSide{
+	margin-left : 5%;
+}
+
+
+
+/* page Delete*/
+
+.mainDelete{
+	color : red;
+	background-color : green;
+	margin-left : 30%;
+	margin-right : 30%;
+	text-align : center;
+}
+
+.errorsEdit{
+	color : red;
+}
+
+/* page edit*/
+
+.mainEdit input[type=text], textarea{
+	width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+
+}
+
+.mainEdit textarea{
+	height : 200px;
+}

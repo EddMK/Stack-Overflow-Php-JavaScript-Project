@@ -62,12 +62,14 @@ class ControllerPost extends Controller {
 		
 		
 		if(($checked == true) && (count($errors) == 0)){
-			$reponses = null;
-			$authorId = null;
-			$answerAccepted = null;
+			$reponses = array();
+			$authorId = $user->get_id();
+			$answerAccepted = "";
 			
 			(new View("question"))->show(array("question" => $post,"reponses" => $reponses,"authorId" => $authorId,
 				"user" => $user,"answerAccepted" => $answerAccepted ));
+				
+			//$this->show();
 			
         }else{
 			(new View("ask"))->show(array("title" => $title, "body" => $body,"user" => $user, "errors" => $errors));
@@ -86,14 +88,21 @@ class ControllerPost extends Controller {
 		if($user){
 			$authorId = User::get_id_by_userName($user->userName);
 		}$reponse="";
+		
+		$errors =array();
 		if(isset($_POST['answer'])){
+			
 			$reponse=$_POST['answer'];
 			$post = new Post($authorId,NULL,$reponse,NULL,$question->get_postid());
-			$post->addPost();
-		}			
+			$errors = $post->validate_answer();
+			if(count($errors) == 0){
+                $post->addPost(); 				
+            }
+		}		
+		
 		$reponses = $question->get_answers($question);
 		(new View("question"))->show(array("question" => $question,"reponses" => $reponses,"authorId" => $authorId,
-				"user" => $user,"answerAccepted" => $answerAccepted ));
+				"user" => $user,"answerAccepted" => $answerAccepted, "errors" => $errors ));
 	}
 	
 	
@@ -114,34 +123,52 @@ class ControllerPost extends Controller {
 	}
 	
 	public function edit(){
+		$user = $this->get_user_or_redirect();
 		$postid = $_GET["param1"];
+		$post = Post::get_post($_GET["param1"]);
+		$is_question = $post->is_question();
 		$title = "";
 		$body = "";
-		if(isset($_POST['modifier'])){
+		$errors= array();
+		if(isset($_POST['modifier'])){		
+			$body = $_POST['body'];
 			$title =$_POST['title'];
-			$body = $_POST['body'];		
-			Post::editPost($title,$body,$postid);
-			if($title =="" || $title == NULL){
-				$post = Post::get_post($postid);
-				$this->redirect("post","show", $post->parentId);
+			$post = new Post($postid,$title,$body ,NULL,NULL);
+			if($is_question == false){	
+				$errors = $post->validate_answer();
+				if(count($errors) == 0){
+					Post::editPost($title,$body,$postid);
+					$post = Post::get_post($postid);
+					$this->redirect("post","show", $post->parentId);
+				}else{
+					(new View("edit"))->show(array("title" => $title, "body" => $body, "postid" => $postid,"user" =>$user, "errors" =>$errors, "is_question" =>$is_question));					
+				}				
 			}else{
-				$this->redirect("post","show",$postid);
+				$is_question = true;
+				$errors = $post->validate_question();
+				if(count($errors) == 0){
+					Post::editPost($title,$body,$postid);
+					$this->redirect("post","show",$postid);
+				}
+				else{
+					(new View("edit"))->show(array("title" => $title, "body" => $body, "postid" => $postid,"user" =>$user, "errors" =>$errors, "is_question" =>$is_question));
+				}
 			}
-			$this->redirect("post","show",$questionId);
-		}		
-		if(isset($_POST['edit'])){
-			$post = Post::get_post($_GET["param1"]);		
+		}else{	
+			$post = Post::get_post($_GET["param1"]);
+			$is_question = $post->is_question();
 			$title = $post->title;
 			$body = $post->body;	
-            (new View("edit"))->show(array("title" => $title, "body" => $body, "postid" => $postid));
+            (new View("edit"))->show(array("title" => $title, "body" => $body, "postid" => $postid,"user" =>$user,"errors" =>$errors, "is_question" =>$is_question));
         }
 	}
 	
 	
 	public function confirm_delete(){
+		$user = $this->get_user_or_redirect();
 		$postid = $_GET["param1"];
 		$post = Post::get_post($postid);
-		var_dump($postid);
+		// var_dump($postid);
 		if(isset($_POST['annuler'])){		
 			if($post->title =="" || $post->title == NULL){//reponse OK
 				$this->redirect("post","show", $post->parentId);
@@ -157,6 +184,6 @@ class ControllerPost extends Controller {
 				$this->redirect("post","index");
 			}
 		}		
-		(new View("delete"))->show(array("postid" => $postid));
+		(new View("delete"))->show(array("postid" => $postid,"user" =>$user));
 	}
 }

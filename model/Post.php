@@ -38,9 +38,20 @@ class Post extends Model {
 		return $errors;
 	}
 	
+	public function validate_answer(){
+		$errors = array();
+		if (!(isset($this->body) && is_string($this->body) && strlen($this->body) > 0)){
+            $errors[] = "Body is required.";
+		}
+		if(strlen(trim($this->body)) == 0){
+			$errors[] = "Body contains only spaces";
+		}
+		return $errors;
+	}
+	
 	
 	public function addPost(){
-		var_dump($this);
+		//var_dump($this);
 		self::execute("INSERT INTO post(AuthorId,Title,Body,AcceptedAnswerId,ParentId) VALUES(:authorId,:title,:body,:acceptedAnswerId,:parentId)", 
 		array("authorId"=>$this->authorId, "title"=>$this->title, "body"=>$this->body, "acceptedAnswerId"=>$this->acceptedAnswerId, "parentId"=>$this->parentId));
 		return $this;
@@ -202,46 +213,15 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
 									ORDER BY q1.max_score DESC, timestamp DESC", 
 			array("postid" => $question->get_postid(),"accepterAnswerId" => $question->acceptedAnswerId));
 		}		
-		/*
-		if($question->acceptedAnswerId == NULL){
-			$query = self::execute("select post.AuthorId, post.Title,post.Body,post.AcceptedAnswerId, post.ParentId from post, vote where ParentId = :postid and post.PostId=vote.PostId
-			Group by vote.PostId ORDER BY SUM(vote.UpDown) DESC,post.Timestamp DESC ", 
-			array("postid" => $question->get_postid()));
-        }else{
-			$query = self::execute("select post.AuthorId, post.Title,post.Body,post.AcceptedAnswerId, post.ParentId from post, vote where ParentId = :postid  and PostId <> :accepterAnswerId
-			post.PostId=vote.PostId Group by vote.PostId ORDER BY SUM(vote.UpDown) DESC,post.Timestamp DESC", 
-			array("postid" => $question->get_postid(),"accepterAnswerId" => $question->acceptedAnswerId));
-		}
-		*/
-		/*
-		Select post.PostId, SUM(vote.UpDown) 
-		FRom post, vote 
-		Where post.PostId=vote.PostId 
-		Group by vote.PostId 
-		ORDER BY SUM(vote.UpDown) DESC,post.Timestamp DESC 		
-		*/
-		
-		/*
-		SELECT post.*, max_score 
-		FROM post, ( SELECT postid, max(score) max_score 
-					FROM ( SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score 
-							FROM post LEFT JOIN vote ON vote.postid = post.postid 
-							WHERE post.ParentId = :postid GROUP BY post.postid ) 
-					AS tbl1 GROUP by postid ) AS q1 
-		WHERE post.postid = q1.postid 
-		ORDER BY q1.max_score DESC, timestamp DESC
-
-		*/
-		
 		$data = $query->fetchAll();
-		var_dump($data);
         $posts = [];
         foreach ($data as $row) {
             $posts[] = new Post($row['AuthorId'], $row['Title'], $row['Body'], $row['AcceptedAnswerId'], $row['ParentId']);
         }
-		var_dump($posts);
         return $posts;
 	}
+	
+	
 	
 	public function get_author_by_authorId(){
 		$query = self::execute("SELECT * FROM User where UserId = :authorid", array("authorid"=>$this->authorId));
@@ -304,4 +284,14 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
 			return $valeur[$i].' '.$cle[$i].' ago';
 		}
 	}
+	
+	public function is_question(){
+		if($this->title == "" || $this->title == NULL){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	
 }
