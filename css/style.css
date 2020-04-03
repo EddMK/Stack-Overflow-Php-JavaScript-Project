@@ -83,6 +83,11 @@ body{
 	color : yellow;
 }
 
+.ul_menu_questions li a:hover{
+	text-decoration : none;
+	color : black;
+	background-color : white;
+}
 
 
 

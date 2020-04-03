@@ -12,20 +12,20 @@ class ControllerPost extends Controller {
 		$user= $this->get_user_or_false();
 		$menu="";
 		$search="";
-		$Search="";
+		$posts = array();
 		if(isset($_POST['search'])){
 			$search=$_POST['search'];
-			$Search ="%".$search."%";
-			$posts = Post::get_searchs($Search);		
+			if(!(strlen(trim($search)) == 0)){
+				$Search ="%".$search."%";
+				$posts = Post::get_searchs($Search);
+			}			
 		}else{
 			if(isset($_GET["param1"])){
 				$menu = $_GET["param1"];		
 			}
 			else{
 				$menu = "newest";
-			}
-		
-			$posts=[];
+			}		
 			if($menu == "newest"){
 				$posts = Post::get_questions_newest();
 			}else if($menu == "votes"){
@@ -34,10 +34,7 @@ class ControllerPost extends Controller {
 				$posts = Post::get_questions_unanswered();
 			}
 		}
-		
-		var_dump($search);			
-		 
-		(new View("index"))->show(array("posts" => $posts,"user" => $user));		
+		(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu));		
     }
 
 	public function ask(){

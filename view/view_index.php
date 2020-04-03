@@ -28,9 +28,9 @@
 			<div class="menu" >
 				<div class="sort_questions">
 					 <ul class="ul_menu_questions">
-						  <li><a class="current" href="post/index/newest">Newest</a></li>
-						  <li><a href="post/index/votes">Votes</a></li>
-						  <li><a href="post/index/unanswered">Unanswered</a></li>
+						  <li><a class="<?php if($menu == "newest"){ echo "current" ; }  ?>" href="post/index/newest">Newest</a></li>
+						  <li><a class="<?php  if($menu == "votes"){ echo "current"; } ?>"  href="post/index/votes">Votes</a></li>
+						  <li><a class="<?php  if($menu == "unanswered"){ echo "current"; }  ?>"  href="post/index/unanswered">Unanswered</a></li>
 					</ul> 
 				</div>
 				<div class="search">
@@ -41,11 +41,20 @@
 			</div>
 			<div class="Questions">
 				<ul class ="questions">
-					<?php foreach ($posts as $post){ ?>				
+					<?php foreach ($posts as $post){ ?>	
+							<?php
+								$title = $post->title;
+								$body = $post->body;
+								$body = preg_replace("/($search)/i","<b>$1</b>",$body);
+								$title = preg_replace("/($search)/i","<b>$1</b>",$title);
+							?>
 							<li>
-								<p><a href="post/show/<?= $post->get_postid()?>"  > <?= $post->title?> </a> </p>
-								<p><?= $post->body?> </p>
-								<p>Asked <?= $post->get_ago()?> by </p>
+								<p><a href="post/show/<?= $post->get_postid()?>"  > <?= $title ?> </a> </p>
+								<p><?= $body ?> </p>
+								<p>
+									Asked <?= $post->get_ago()?> by <?= $post->get_author_by_authorId()->fullName ?>
+									(<?= $post->get_score()?> vote(s),<?= $post->number_of_answers() ?> answer(s))
+								</p>
 							</li>
 					<?php } ?>
 				</ul>

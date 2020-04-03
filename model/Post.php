@@ -81,9 +81,6 @@ class Post extends Model {
 	public static function get_searchs($search) {
         $query = self::execute(" SELECT * FROM `post` WHERE Title LIKE :search OR Body LIKE :search OR
 		AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE :search  OR FullName LIKE :search  OR Email LIKE :search) ", array("search" => $search));
-		//SELECT * FROM `post` WHERE (Title OR Body LIKE '%Angular%') OR AuthorId =(SELECT UserId FROM `user` WHERE UserName OR FullName OR Email LIKE '%test%')
-		//SELECT UserId FROM `user` WHERE UserName OR FullName OR Email LIKE '%test%' 
-		//SELECT * FROM `post` WHERE AuthorId= (SELECT UserId FROM `user` WHERE UserName LIKE '%edouard%' OR FullName LIKE '%edouard%' OR Email LIKE '%edouard%')
         $data = $query->fetchAll();
         $posts = [];
         foreach ($data as $row) {
@@ -203,7 +200,7 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
         }
 	}
 	
-	public function get_answers($question){//Attention à trier les réponses !!!
+	public function get_answers($question){
 		if($question->acceptedAnswerId == NULL){
 			$query = self::execute("SELECT post.*, max_score 
 									FROM post, ( SELECT postid, max(score) max_score 
@@ -235,7 +232,15 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
         return $posts;
 	}
 	
-	
+	public function number_of_answers(){
+		$query = self::execute("SELECT COUNT(*) FROM post where ParentId = :parentid", array("parentid"=>$this->get_postid()));
+        $data = $query->fetchColumn();
+		if($data == false){
+			return 0;
+		}else{
+			return $data;
+		}
+	}
 	
 	public function get_author_by_authorId(){
 		$query = self::execute("SELECT * FROM User where UserId = :authorid", array("authorid"=>$this->authorId));
@@ -259,7 +264,14 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
 	
 	public function get_score(){
 		$query = self::execute("SELECT SUM(UpDown) FROM Vote WHERE PostId=:postid", array("postid"=>$this->get_postid()));
-		return $query->fetchColumn();
+		$data = $query->fetchColumn();
+		if($data == false){
+			return 0;
+		}else{
+			return $data;
+		}
+		
+
 	}
 	
 	public function get_score_answer(){

@@ -54,11 +54,7 @@
 									</button>
 							<?php } ?>
 							
-							<?php if($question->get_score() == NULL){ ?>
-								<p class="score">0 votes</p>
-							<?php }else{ ?>
-								<p class="score"><?= $question->get_score()?> votes</p>
-							<?php } ?>
+							<p class="score"><?= $question->get_score()?> votes</p>
 							
 							<?php if($question->getLastVote($authorId,$question->get_postid()) == -1){ ?>
 									<button name="Genre" type="submit" value=2>
