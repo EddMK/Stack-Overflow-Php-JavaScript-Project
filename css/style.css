@@ -18,7 +18,7 @@ body{
 	font-size: 50px;
 }
 
-#main{
+.main{
 	background-color : white;	
 	margin-left : 10%; 
 	margin-right : 10%;
@@ -32,6 +32,9 @@ body{
 .search{
 	position : absolute;
 	right : 0px;
+	height : 40px; 
+	width : 200px;
+
 }
 
 .textHeader{
@@ -64,15 +67,6 @@ body{
 	font-size:33px;
 	
 	
-}
-
-.Search{
-	height : 10px;
-	width :  200px;
-	background-image: url('searchicon.png');
-	background-position: 10px 10px; 
-	background-repeat: no-repeat;
-	padding: 12px 20px 12px 40px;
 }
 
 .ul_menu_questions li{

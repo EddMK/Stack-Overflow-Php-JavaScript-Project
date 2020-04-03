@@ -78,6 +78,20 @@ class Post extends Model {
 	
 	// TRIER QUESTIONS
 	
+	public static function get_searchs($search) {
+        $query = self::execute(" SELECT * FROM `post` WHERE Title LIKE :search OR Body LIKE :search OR
+		AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE :search  OR FullName LIKE :search  OR Email LIKE :search) ", array("search" => $search));
+		//SELECT * FROM `post` WHERE (Title OR Body LIKE '%Angular%') OR AuthorId =(SELECT UserId FROM `user` WHERE UserName OR FullName OR Email LIKE '%test%')
+		//SELECT UserId FROM `user` WHERE UserName OR FullName OR Email LIKE '%test%' 
+		//SELECT * FROM `post` WHERE AuthorId= (SELECT UserId FROM `user` WHERE UserName LIKE '%edouard%' OR FullName LIKE '%edouard%' OR Email LIKE '%edouard%')
+        $data = $query->fetchAll();
+        $posts = [];
+        foreach ($data as $row) {
+            $posts[] = new Post($row['AuthorId'], $row['Title'], $row['Body'], $row['AcceptedAnswerId'], $row['ParentId']);
+        }
+        return $posts;
+    }
+	
 	public static function get_questions_newest() {
         $query = self::execute("select * from Post where Title IS NOT NULL and Title <>'' order by Timestamp DESC", array());
         $data = $query->fetchAll();

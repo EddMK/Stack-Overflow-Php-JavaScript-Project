@@ -24,7 +24,7 @@
 				<?php }    ?>
 			</div>
         </div>
-		<div id="main">
+		<div class="main">
 			<div class="menu" >
 				<div class="sort_questions">
 					 <ul class="ul_menu_questions">
@@ -34,8 +34,8 @@
 					</ul> 
 				</div>
 				<div class="search">
-					<form action="#">
-						<input type="text" id="search" name="search" class="Search" placeholder="Search...">
+					<form action="post/index" method="post" class="search">
+						<input type="text" id="search" name="search" class="search" placeholder="Search...">
 					</form>
 				</div>
 			</div>

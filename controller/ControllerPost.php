@@ -12,12 +12,12 @@ class ControllerPost extends Controller {
 		$user= $this->get_user_or_false();
 		$menu="";
 		$search="";
-		
+		$Search="";
 		if(isset($_POST['search'])){
 			$search=$_POST['search'];
-			
-		}
-		else{
+			$Search ="%".$search."%";
+			$posts = Post::get_searchs($Search);		
+		}else{
 			if(isset($_GET["param1"])){
 				$menu = $_GET["param1"];		
 			}
@@ -35,7 +35,7 @@ class ControllerPost extends Controller {
 			}
 		}
 		
-					
+		var_dump($search);			
 		 
 		(new View("index"))->show(array("posts" => $posts,"user" => $user));		
     }
