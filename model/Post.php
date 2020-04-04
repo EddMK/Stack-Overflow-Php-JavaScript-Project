@@ -179,7 +179,15 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
 	}
 	
 	public function get_postid(){
-		$query = self::execute("SELECT * FROM Post where Title = :title", array("title"=>$this->title));
+		if($this->is_question()){
+			return Post::question_postid($this->title);
+		}else{
+			return Post::answer_postid($this->body);
+		}
+	}
+	
+	private static function question_postid($title){
+		$query = self::execute("SELECT * FROM Post where Title = :title", array("title"=>$title));
         $data = $query->fetch(); // un seul résultat au maximum
         //var_dump($data["PostId"]);
 		if ($query->rowCount() == 0) {
@@ -189,8 +197,8 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
         }
 	}
 	
-	public function get_answerid(){
-		$query = self::execute("SELECT * FROM Post where Body = :body", array("body"=>$this->body));
+	private static function answer_postid($body){
+		$query = self::execute("SELECT * FROM Post where Body = :body", array("body"=>$body));
         $data = $query->fetch(); // un seul résultat au maximum
         //var_dump($data["PostId"]);
 		if ($query->rowCount() == 0) {
@@ -316,6 +324,20 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
 			return false;
 		}else{
 			return true;
+		}
+	}
+	
+	public function answer_is_accepted(){
+		if($this->is_question()==false){
+			$answerId = $this->get_postid();
+			$question = self::get_post($this->parentId);
+			if($question->acceptedAnswerId == $answerId){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
 		}
 	}
 	

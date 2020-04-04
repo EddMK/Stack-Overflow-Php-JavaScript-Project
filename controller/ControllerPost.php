@@ -74,32 +74,38 @@ class ControllerPost extends Controller {
 	}
 	
 	public function show(){
-		$user = $this->get_user_or_false();
-		//un if comme condition if(isset($_GET["param1"]))
-		$question = Post::get_post($_GET["param1"]);
-		$answerAccepted = "";
-		if($question->acceptedAnswerId !== NULL){
-			$answerAccepted = Post::get_post($question->acceptedAnswerId);
-		}
-		$authorId ="";
-		if($user){
-			$authorId = User::get_id_by_userName($user->userName);
-		}$reponse="";
-		
-		$errors =array();
-		if(isset($_POST['answer'])){
+		$user = "";
+		$id = "";
+		$question = "";
+		$answerAccepted ="";
+		if(isset($_GET["param1"])){
+			$id = $_GET["param1"];
+			$user = $this->get_user_or_false();
+			$question = Post::get_post($id);
+			if($question->is_question()){
+				$reponse="";
+				$authorId ="";
+				$posts = array($question);
+				if($question->acceptedAnswerId !== NULL){
+					$answerAccepted = Post::get_post($question->acceptedAnswerId);
+					array_push($posts,$answerAccepted);
+				}
+				$errors =array();
+				if(isset($_POST['answer'])){
+					$reponse=$_POST['answer'];
+					$post = new Post($user->get_id(),"",$reponse,NULL,$question->get_postid());//changer titre de reponse mettre "" ala place de NULL
+					$errors = $post->validate_answer();
+					if(count($errors) == 0){
+						$post->addPost(); 				
+					}
+				}
+				
+				$reponses = $question->get_answers($question);
+				$posts = array_merge($posts,$reponses);
+				(new View("question"))->show(array("question" => $question,"user" => $user, "errors" => $errors , "posts" =>$posts, "id" =>$id ));
 			
-			$reponse=$_POST['answer'];
-			$post = new Post($authorId,NULL,$reponse,NULL,$question->get_postid());
-			$errors = $post->validate_answer();
-			if(count($errors) == 0){
-                $post->addPost(); 				
-            }
-		}		
-		
-		$reponses = $question->get_answers($question);
-		(new View("question"))->show(array("question" => $question,"reponses" => $reponses,"authorId" => $authorId,
-				"user" => $user,"answerAccepted" => $answerAccepted, "errors" => $errors ));
+			}
+		}
 	}
 	
 	

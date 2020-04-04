@@ -45,14 +45,17 @@
 							<?php
 								$title = $post->title;
 								$body = $post->body;
+								$author = $post->get_author_by_authorId()->fullName;
 								$body = preg_replace("/($search)/i","<b>$1</b>",$body);
 								$title = preg_replace("/($search)/i","<b>$1</b>",$title);
+								$author = preg_replace("/($search)/i","<b>$1</b>",$author);
 							?>
 							<li>
 								<p><a href="post/show/<?= $post->get_postid()?>"  > <?= $title ?> </a> </p>
+								<?php var_dump($post->get_postid())?>
 								<p><?= $body ?> </p>
 								<p>
-									Asked <?= $post->get_ago()?> by <?= $post->get_author_by_authorId()->fullName ?>
+									Asked <?= $post->get_ago()?> by <?= $author ?>
 									(<?= $post->get_score()?> vote(s),<?= $post->number_of_answers() ?> answer(s))
 								</p>
 							</li>
