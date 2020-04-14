@@ -24,8 +24,6 @@
 				<?php }    ?>
 			</div>
 		</div>
-		<?php  var_dump($posts)   ?>
-		
 		<?php foreach($posts as $post){ ?>
 			<div class = "Post">
 					<div class ="rightSide">
@@ -40,7 +38,7 @@
 								<?php if($post->authorId == $user->get_id()) {   ?>
 									<a href="post/edit/<?= $post->get_postid() ?>/"><i class="fas fa-edit"></i></a>
 									<?php if($post->is_question()==true) { ?>
-										<?php if($post->number_of_answers()!=0){   ?>
+										<?php if($post->number_of_answers()==0){   ?>
 											<a href="post/confirm_delete/<?= $post->get_postid() ?>/"><i class="fas fa-trash-alt"></i></a>
 										<?php }  ?>
 									<?php } else{?>	

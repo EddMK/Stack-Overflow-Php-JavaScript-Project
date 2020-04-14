@@ -56,19 +56,10 @@ class ControllerPost extends Controller {
 				if(count($errors) == 0){
 					$post->addPost(); 				
 				}
-			}
-			
-			
+			}		
 			if(($checked == true) && (count($errors) == 0)){
-				$reponses = array();
-				$authorId = $user->get_id();
-				$answerAccepted = "";
-				
-				(new View("question"))->show(array("question" => $post,"reponses" => $reponses,"authorId" => $authorId,
-					"user" => $user,"answerAccepted" => $answerAccepted ));
-					
-				//$this->show();
-				
+				$postid = $post->get_postid();
+				$this->redirect("post","show",$postid);				
 			}else{
 				(new View("ask"))->show(array("title" => $title, "body" => $body,"user" => $user, "errors" => $errors));
 			}
@@ -91,22 +82,22 @@ class ControllerPost extends Controller {
 			if($question->is_question()){
 				$reponse="";
 				$authorId ="";
-				$posts = array($question);
+				$begin = array($question);
 				if($question->acceptedAnswerId !== NULL){
 					$answerAccepted = Post::get_post($question->acceptedAnswerId);
-					array_push($posts,$answerAccepted);
+					array_push($begin,$answerAccepted);
 				}
 				$errors =array();
 				if(isset($_POST['answer'])){
 					$reponse=$_POST['answer'];
-					$post = new Post($user->get_id(),"",$reponse,NULL,$question->get_postid());//changer titre de reponse mettre "" ala place de NULL
+					$post = new Post($user->get_id(),"",$reponse,NULL,$question->get_postid());
 					$errors = $post->validate_answer();
 					if(count($errors) == 0){
 						$post->addPost(); 				
 					}
 				}		
 				$reponses = $question->get_answers($question);
-				$posts = array_merge($posts,$reponses);
+				$posts = array_merge($begin,$reponses);
 				(new View("question"))->show(array("question" => $question,"user" => $user, "errors" => $errors , "posts" =>$posts, "id" =>$id ));	
 			}else{
 				(new View("error"))->show(array());

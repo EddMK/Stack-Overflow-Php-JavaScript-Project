@@ -52,7 +52,6 @@
 							?>
 							<li>
 								<p><a href="post/show/<?= $post->get_postid()?>"  > <?= $title ?> </a> </p>
-								<?php var_dump($post->get_postid())?>
 								<p><?= $body ?> </p>
 								<p>
 									Asked <?= $post->get_ago()?> by <?= $author ?>
