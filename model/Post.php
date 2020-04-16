@@ -301,18 +301,14 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
 	
 	public function get_ago(){
 		$dateNow =  date_create();
-		//var_dump($dateNow);
 		$dateThis = new DateTime($this->get_timestamp());
-		//var_dump($dateThis);
 		$diff = $dateNow->diff($dateThis);
-		//var_dump($diff);
 		$valeur = array($diff->y,$diff->m, $diff->d,$diff->h,$diff->i,$diff->s);
 		$cle = array("year","month","day","hour","minute","seconde");
 		$i = 0;
 		while($i<count($valeur) && $valeur[$i]==0){
 			$i ++;
 		}
-		//var_dump($i);
 		if($i == 6){
 			return '0 secondes';
 		}else{
@@ -343,7 +339,7 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
 	}
 	
 	public function get_comments(){
-		$query = self::execute("select * from comment WHERE PostId=:postid", array("postid"=>$this->get_postid()));
+		$query = self::execute("select * from comment WHERE PostId=:postid order by Timestamp DESC", array("postid"=>$this->get_postid()));
         $data = $query->fetchAll();
 		$comments = [];
         foreach ($data as $row) {

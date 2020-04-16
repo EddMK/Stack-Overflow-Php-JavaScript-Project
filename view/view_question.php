@@ -69,7 +69,7 @@
 						<?php if(count($post->get_comments())!= 0){  ?>
 							<ul>
 								<?php foreach ($post->get_comments() as $comment): ?>
-									<li><?= $comment->body ?></li>
+									<li><?= $comment->body ?> - <?= $comment->get_author_by_authorId()->fullName ?>  <?= $comment->get_ago() ?></li>
 								<?php endforeach; ?>
 							</ul>
 						<?php } ?>

@@ -38,5 +38,42 @@ class Comment extends Model {
 		return $this;
 	}
 	
+	public function get_author_by_authorId(){
+		$query = self::execute("SELECT * FROM User where UserId = :userid", array("userid"=>$this->userId));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"]);
+        }
+	}
+	
+	private static function get_timestamp($comment){
+		$query = self::execute("SELECT * FROM Comment where Body = :body", array("body"=>$comment->body));
+        $data = $query->fetch(); // un seul résultat au maximum
+		//var_dump($data["Timestamp"]);
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return $data["Timestamp"];
+        }
+	}
+	
+	public function get_ago(){
+		$dateNow =  date_create();
+		$dateThis = new DateTime(Comment::get_timestamp($this));
+		$diff = $dateNow->diff($dateThis);
+		$valeur = array($diff->y,$diff->m, $diff->d,$diff->h,$diff->i,$diff->s);
+		$cle = array("year(s)","month(s)","day(s)","hour(s)","minute(s)","seconde(s)");
+		$i = 0;
+		while($i<count($valeur) && $valeur[$i]==0){
+			$i ++;
+		}
+		if($i == 6){
+			return '0 secondes';
+		}else{
+			return $valeur[$i].' '.$cle[$i].' ago';
+		}
+	}
 	
 }
