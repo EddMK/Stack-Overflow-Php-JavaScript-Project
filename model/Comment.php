@@ -11,13 +11,11 @@ class Comment extends Model {
     public $userId;
     public $postId;
     public $body;
-    //public $timeStamp;
 
     public function __construct($userId, $postId, $body){
         $this->userId = $userId;
         $this->postId = $postId;
         $this->body = $body;
-        //$this->timeStamp = $timeStamp;
     }
 	
 	public function validate(){
@@ -104,9 +102,30 @@ class Comment extends Model {
 		return $comment;
 	}
 	
+	public static function get_postid_by_id($commentId){
+		$query = self::execute("SELECT PostId FROM Comment where CommentId =:commentId ", 
+			array("commentId"=>$commentId));
+        $data = $query->fetch();
+		if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return $data["PostId"];
+        }
+	}
+	
 	public function delete_comment(){
 		self::execute("DELETE FROM Comment WHERE CommentId = :commentId", 
 		array("commentId"=>$this->get_commentid()));
+	}
+	
+	public function editComment(){
+		$date = new DateTime();
+		$return = $date->format('Y-m-d H:i:s');
+		//var_dump($this->body);
+		self::execute("UPDATE Comment SET Body=:body, Timestamp =:return WHERE CommentId=:commentid", 
+		array("body"=>$this->body , "return"=>$return, "commentid"=>$this->get_commentid()));
+		return $this;
+		var_dump($this);
 	}
 	
 }

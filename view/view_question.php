@@ -75,7 +75,7 @@
 										<?php if($user){?>
 											<?php if($user->get_id() == $comment->userId){?>
 												<a href="comment/confirm_delete/<?= $comment->get_commentid() ?>/" ><i class="fas fa-trash-alt"></i></a>
-												<a href="#"><i class="fas fa-edit"></i></a>
+												<a href="comment/edit/<?= $comment->get_commentid() ?>/"><i class="fas fa-edit"></i></a>
 											<?php }?>
 										<?php }?>
 									</li>

@@ -2,7 +2,7 @@
 
 require_once 'model/Post.php';
 require_once 'model/User.php';
-
+require_once 'model/Comment.php';
 require_once 'framework/View.php';
 require_once 'framework/Controller.php';
 
@@ -48,6 +48,33 @@ class ControllerComment extends Controller {
 				$this->redirect("post","show", $comment->postId );
 			}				
 			(new View("delete"))->show(array("id" => $id,"user" =>$user,"post" => $post));
+		}else{
+			(new View("error"))->show(array());
+		}
+	}
+	
+	public function edit(){
+		$user= $this->get_user_or_false();
+		if($user && isset($_GET["param1"])){
+			$id = $_GET["param1"];
+			$body ="";
+			$errors = array();	
+			if(isset($_POST['modifier'])){
+				$body = $_POST['body'];
+				$postId = Comment::get_postid_by_id($id);
+				$comment = new Comment($user->get_id(),$postId,$body);
+				$errors = $comment->validate();
+				if(count($errors)==0){
+					$comment->editComment();
+					$this->redirect("post","show", $postId);
+				}else{
+					(new View("editcomment"))->show(array("user"=>$user,"body"=>$body,"errors" => $errors,"id"=> $id));
+				}
+			}else{
+				$comment = Comment::get_comment_by_id($id);
+				$body = $comment->body;
+				(new View("editcomment"))->show(array("user"=>$user,"body"=>$body,"errors" => $errors,"id"=> $id));
+			}
 		}else{
 			(new View("error"))->show(array());
 		}

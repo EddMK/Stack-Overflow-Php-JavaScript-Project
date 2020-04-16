@@ -19,15 +19,10 @@
 					</div>
 			</div>
 		</div>
-        <div class="mainEdit">
-			
-            <form id="message_form" action="post/edit/<?= $postid ?>" method="post">
-                <?php if($is_question == true ){    ?>
-					Title
-					<input id="title" name="title" type="text" value="<?= $title ?>"><br>
-				<?php } ?>
+        <div class="mainEdit">			
+            <form id="message_form" action="comment/edit/<?= $id ?>" method="post">
 				Body
-				<textarea id="body" name="body" rows='3'><?= $body ?> </textarea><br>
+				<textarea id="body" name="body" rows='3'> <?= $body ?></textarea><br>
 				<input type="submit" name="modifier" value="modifier">
             </form>          
         </div>
