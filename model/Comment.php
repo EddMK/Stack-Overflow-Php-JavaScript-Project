@@ -38,7 +38,7 @@ class Comment extends Model {
 		return $this;
 	}
 	
-	public function get_author_by_authorId(){
+	public function get_user_by_userid(){
 		$query = self::execute("SELECT * FROM User where UserId = :userid", array("userid"=>$this->userId));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
@@ -74,6 +74,39 @@ class Comment extends Model {
 		}else{
 			return $valeur[$i].' '.$cle[$i].' ago';
 		}
+	}
+	
+	public function get_commentid(){
+		$id = Comment::get_id($this);
+		return $id;
+	}
+	
+	private static function get_id($comment){
+		$query = self::execute("SELECT * FROM Comment where UserId =:userid and PostId =:postid and Body =:body ", 
+			array("userid"=>$comment->userId, "postid"=>$comment->postId, "body"=>$comment->body));
+        $data = $query->fetch();
+		if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return $data["CommentId"];
+        }
+	}
+	
+	public static function get_comment_by_id($commentId){
+		$comment = "";
+		$query = self::execute("SELECT * FROM Comment where CommentId = :commentid", array("commentid"=>$commentId));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            $comment = "";
+        } else {
+            $comment = new Comment($data['UserId'], $data['PostId'], $data['Body']);
+        }
+		return $comment;
+	}
+	
+	public function delete_comment(){
+		self::execute("DELETE FROM Comment WHERE CommentId = :commentId", 
+		array("commentId"=>$this->get_commentid()));
 	}
 	
 }

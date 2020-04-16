@@ -33,4 +33,24 @@ class ControllerComment extends Controller {
 			(new View("error"))->show(array());
 		}
 	}
+	
+	public function confirm_delete(){
+		$post = false;
+		$user= $this->get_user_or_false();
+		if($user && isset($_GET["param1"])){
+			$id = $_GET["param1"];
+			$comment= Comment::get_comment_by_id($id);
+			if(isset($_POST['annuler'])){		
+				$this->redirect("post","show", $comment->postId);
+			}
+			if(isset($_POST['supprimer'])){
+				$comment->delete_comment();
+				$this->redirect("post","show", $comment->postId );
+			}				
+			(new View("delete"))->show(array("id" => $id,"user" =>$user,"post" => $post));
+		}else{
+			(new View("error"))->show(array());
+		}
+	}
+	
 }

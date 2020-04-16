@@ -22,9 +22,13 @@
         <div class = "mainDelete">
 			<i class="fas fa-exclamation-triangle"  style="font-size:70px" ></i>
             <h1>Etes vous sur ?<h1>
-			<p>Voulez vous vraiment supprimer cette publication ?<p>
+			<p>Voulez vous vraiment supprimer?<p>
 			<p>Ce processus est irréversible.</p>
-			<form id="message_form" action="post/confirm_delete/<?= $postid ?>" method="post">
+			<?php  if($post == true){  ?>
+				<form id="delete_form" action="post/confirm_delete/<?= $id ?>" method="post">
+			<?php }else{?>
+				<form id="delete_form" action="comment/confirm_delete/<?= $id ?>" method="post">
+			<?php } ?>
 				<input type="submit" name="annuler" value="annuler">
 				<input type="submit" name="supprimer" value="supprimer">
             </form>          

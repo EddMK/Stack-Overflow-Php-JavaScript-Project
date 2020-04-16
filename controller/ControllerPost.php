@@ -178,11 +178,11 @@ class ControllerPost extends Controller {
 	
 	
 	public function confirm_delete(){
-		if(isset($_GET["param1"])){
-			$user = $this->get_user_or_redirect();
-			$postid = $_GET["param1"];
-			$post = Post::get_post($postid);
-			// var_dump($postid);
+		$post = true;
+		$user = $this->get_user_or_false();
+		if(isset($_GET["param1"]) && $user){		
+			$id = $_GET["param1"];
+			$post = Post::get_post($id);
 			if(isset($_POST['annuler'])){		
 				if($post->title =="" || $post->title == NULL){//reponse OK
 					$this->redirect("post","show", $post->parentId);
@@ -191,14 +191,14 @@ class ControllerPost extends Controller {
 				}
 			}
 			if(isset($_POST['supprimer'])){
-				Post::deletePost($postid);
+				Post::deletePost($id);
 				if($post->title =="" || $post->title == NULL){//reponse OK
 					$this->redirect("post","show", $post->parentId);
 				}else{//question
 					$this->redirect("post","index");
 				}
 			}		
-			(new View("delete"))->show(array("postid" => $postid,"user" =>$user));
+			(new View("delete"))->show(array("id" => $id,"user" =>$user,"post" => $post));
 		}else{
 			(new View("error"))->show(array());
 		}

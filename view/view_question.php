@@ -69,7 +69,16 @@
 						<?php if(count($post->get_comments())!= 0){  ?>
 							<ul>
 								<?php foreach ($post->get_comments() as $comment): ?>
-									<li><?= $comment->body ?> - <?= $comment->get_author_by_authorId()->fullName ?>  <?= $comment->get_ago() ?></li>
+									<li>
+										<?= $comment->body ?> - <?= $comment->get_user_by_userid()->fullName ?>  <?= $comment->get_ago() ?>
+										<?= $comment->get_commentid() ?>
+										<?php if($user){?>
+											<?php if($user->get_id() == $comment->userId){?>
+												<a href="comment/confirm_delete/<?= $comment->get_commentid() ?>/" ><i class="fas fa-trash-alt"></i></a>
+												<a href="#"><i class="fas fa-edit"></i></a>
+											<?php }?>
+										<?php }?>
+									</li>
 								<?php endforeach; ?>
 							</ul>
 						<?php } ?>
