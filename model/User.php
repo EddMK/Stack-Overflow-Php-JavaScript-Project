@@ -5,18 +5,20 @@ require_once "Post.php";
 
 class User extends Model {
 
-	//public $userId;
     public $userName;
     public $hashed_password;
     public $fullName;
 	public $email;
+	public $role;
 
     public function __construct($userName ,$hashed_password, $fullName, $email) {
 		$this->userName = $userName;
         $this->hashed_password = $hashed_password;
         $this->fullName = $fullName;
         $this->email = $email;
+		$this->role = 'user';
     }
+	
 	
 	public static function validate_unicity($userName){
         $errors = [];

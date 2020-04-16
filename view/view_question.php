@@ -62,9 +62,18 @@
 								<?php }  ?>
 							<?php }  ?>
 						</p>
+						
 						<?php if($post->is_question()==true) {?>
 							<p class="body"><?= $post->body ?> </p>
 						<?php } ?>
+						<?php if(count($post->get_comments())!= 0){  ?>
+							<ul>
+								<?php foreach ($post->get_comments() as $comment): ?>
+									<li><?= $comment->body ?></li>
+								<?php endforeach; ?>
+							</ul>
+						<?php } ?>
+						
 					</div>
 					<div class ="vote">
 						<?php if($user){    ?>
@@ -100,6 +109,11 @@
 							<?php } ?>
 						<?php } ?>
 					</div>
+					<?php if($user){ ?>	
+						<div class="comment">
+							<a href="comment/add/<?= $id ?>" > Ajouter un commentaire </a>	
+						</div>
+					<?php }    ?>
 				</div>
 		<?php }?>
 		<div class = "Repondre">

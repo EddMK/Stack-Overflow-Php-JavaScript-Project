@@ -133,7 +133,7 @@ body{
 /* Ask Question   */
 
 .mainAsk{
-	color : white;
+	color : black;
 	font-size: 25px;
 }
 
@@ -211,6 +211,9 @@ margin-bottom: 10px;
 	margin-left : 5%;
 }
 
+.comment{
+	margin-left : 8%;
+}
 
 
 /* page Delete*/

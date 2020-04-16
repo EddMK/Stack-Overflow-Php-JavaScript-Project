@@ -4,6 +4,7 @@ require_once "lib/parsedown-1.7.3/Parsedown.php";
 require_once "framework/Model.php";
 require_once "User.php";
 require_once "Vote.php";
+require_once "Comment.php";
 
 class Post extends Model {
 
@@ -339,6 +340,16 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
 		}else{
 			return false;
 		}
+	}
+	
+	public function get_comments(){
+		$query = self::execute("select * from comment WHERE PostId=:postid", array("postid"=>$this->get_postid()));
+        $data = $query->fetchAll();
+		$comments = [];
+        foreach ($data as $row) {
+            $comments[] = new Comment($row['UserId'], $row['PostId'], $row['Body']);
+        }
+        return $comments;
 	}
 	
 	
