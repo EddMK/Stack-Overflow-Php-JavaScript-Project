@@ -52,7 +52,7 @@ class ControllerUser extends Controller {
 			$fullName = $_POST['fullName'];
 			$email = $_POST['email'];
 
-            $user = new User($userName, Tools::my_hash($password),$fullName,$email);
+            $user = new User($userName, Tools::my_hash($password),$fullName,$email,"user");
             $errors = User::validate_unicity($userName);
             $errors = array_merge($errors, $user->validate());
             $errors = array_merge($errors, User::validate_passwords($password, $password_confirm));
