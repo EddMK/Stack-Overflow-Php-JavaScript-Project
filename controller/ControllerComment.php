@@ -24,8 +24,12 @@ class ControllerComment extends Controller {
 				$comment = new Comment($user->get_id(),$postid,$body);
 				$errors = $comment->validate();
 				if(count($errors) == 0){
-					$comment->addComment(); 
-					$this->redirect("post","show",$postid);	
+					$comment->addComment();
+					if($post->is_question()){
+						$this->redirect("post","show",$postid);
+					}else{
+						$this->redirect("post","show",$post->parentId);
+					}		
 				}
 			}
 			(new View("comment"))->show(array("user" => $user,"post" => $post,"postid" => $postid,"errors" => $errors));
@@ -62,11 +66,17 @@ class ControllerComment extends Controller {
 			if(isset($_POST['modifier'])){
 				$body = $_POST['body'];
 				$postId = Comment::get_postid_by_id($id);
+				$post = Post::get_post($postId);
 				$comment = new Comment($user->get_id(),$postId,$body);
 				$errors = $comment->validate();
 				if(count($errors)==0){
-					$comment->editComment();
-					$this->redirect("post","show", $postId);
+					$comment->editComment($id);
+					if($post->is_question()){
+						$this->redirect("post","show", $postId);
+					}else{
+						$this->redirect("post","show", $post->parentId);
+					}
+					
 				}else{
 					(new View("editcomment"))->show(array("user"=>$user,"body"=>$body,"errors" => $errors,"id"=> $id));
 				}

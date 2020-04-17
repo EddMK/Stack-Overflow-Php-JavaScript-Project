@@ -118,14 +118,14 @@ class Comment extends Model {
 		array("commentId"=>$this->get_commentid()));
 	}
 	
-	public function editComment(){
+	public function editComment($commentId){
 		$date = new DateTime();
 		$return = $date->format('Y-m-d H:i:s');
 		//var_dump($this->body);
 		self::execute("UPDATE Comment SET Body=:body, Timestamp =:return WHERE CommentId=:commentid", 
-		array("body"=>$this->body , "return"=>$return, "commentid"=>$this->get_commentid()));
+		array("body"=>$this->body , "return"=>$return, "commentid"=>$commentId));
 		return $this;
-		var_dump($this);
+		//var_dump($this);
 	}
 	
 }

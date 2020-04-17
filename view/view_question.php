@@ -72,6 +72,8 @@
 									<li>
 										<?= $comment->body ?> - <?= $comment->get_user_by_userid()->fullName ?>  <?= $comment->get_ago() ?>
 										<?= $comment->get_commentid() ?>
+										
+										<?= Comment::get_postid_by_id($comment->get_commentid()) ?>
 										<?php if($user){?>
 											<?php if($user->get_id() == $comment->userId){?>
 												<a href="comment/confirm_delete/<?= $comment->get_commentid() ?>/" ><i class="fas fa-trash-alt"></i></a>
@@ -120,7 +122,7 @@
 					</div>
 					<?php if($user){ ?>	
 						<div class="comment">
-							<a href="comment/add/<?= $id ?>" > Ajouter un commentaire </a>	
+							<a href="comment/add/<?= $post->get_postid() ?>" > Ajouter un commentaire </a>	
 						</div>
 					<?php }    ?>
 				</div>
