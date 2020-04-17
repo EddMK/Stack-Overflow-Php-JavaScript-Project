@@ -257,7 +257,7 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"]);
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"], $data["Role"]);
         }
 	}
 	

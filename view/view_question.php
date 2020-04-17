@@ -33,8 +33,10 @@
 								<p class="body"><?= $post->body ?> </p>
 						<?php } ?>
 						<p class="asked">
-							Asked <?= $post->get_ago() ?> by <?= $post->get_author_by_authorId()->userName ?>
+							Asked <?= $post->get_ago() ?> by <?= $post->get_author_by_authorId()->userName ?> 
+							<?php if($post->get_author_by_authorId()->role == 'admin'){ echo "admin";} ?>
 							<?php if($user){ ?>
+								
 								<?php if($post->authorId == $user->get_id()) {   ?>
 									<a href="post/edit/<?= $post->get_postid() ?>/"><i class="fas fa-edit"></i></a>
 									<?php if($post->is_question()==true) { ?>

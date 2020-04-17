@@ -11,13 +11,24 @@ class User extends Model {
 	public $email;
 	public $role;
 
-    public function __construct($userName ,$hashed_password, $fullName, $email) {
+    public function __construct($userName ,$hashed_password, $fullName, $email, $role) {
 		$this->userName = $userName;
         $this->hashed_password = $hashed_password;
         $this->fullName = $fullName;
         $this->email = $email;
-		$this->role = 'user';
+		$this->role = User::role_of_user($this->get_id());
     }
+	
+	public static function init(){
+		$query = self::execute("SELECT * FROM User", array());
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"], $data["Role"]);
+        }
+	}
+	
 	
 	
 	public static function validate_unicity($userName){
@@ -35,7 +46,7 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"]);
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"], $data["Role"]);
         }
     }
 	
@@ -56,7 +67,7 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"]);
+            return new User($data["UserName"], $data["Password"], $data["FullName"], $data["Email"], $data["Role"]);
         }
 	}
 	
@@ -156,7 +167,26 @@ class User extends Model {
     }
 	
 	
+	public function is_admin(){
+		$role = User::role_of_user($this->get_id());
+		//var_dump($role);
+		if($role == 'admin'){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
+	private static function role_of_user($id){
+		$query = self::execute("SELECT * FROM User where UserId = :userId", array("userId"=>$id));
+        $data = $query->fetch(); // un seul résultat au maximum
+        //var_dump($data["Role"]);
+		if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return $data["Role"];
+        }
+	}
 	
 	
 	
