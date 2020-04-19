@@ -155,6 +155,32 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
         return $posts;
 	}
 	
+	public static function get_questions_active(){
+		$query = self::execute("select question.PostId, question.AuthorId, question.Title, question.Body, question.ParentId, question.Timestamp, question.AcceptedAnswerId 
+from post as question, 
+     (select post_updates.postId, max(post_updates.timestamp) as timestamp from (
+        select q.postId as postId, q.timestamp from post q where q.parentId is null
+        UNION
+        select a.parentId as postId, a.timestamp from post a where a.parentId is not null
+        UNION
+        select c.postId as postId, c.timestamp from comment c 
+        UNION 
+        select a.parentId as postId, c.timestamp 
+        from post a, comment c 
+        WHERE c.postId = a.postId and a.parentId is not null
+        ) as post_updates
+      group by post_updates.postId) as last_post_update
+where question.postId = last_post_update.postId and question.parentId is null
+order by last_post_update.timestamp DESC",
+		array());
+        $data = $query->fetchAll();
+        $posts = [];
+        foreach ($data as $row) {
+            $posts[] = new Post($row['AuthorId'], $row['Title'], $row['Body'], $row['AcceptedAnswerId'], $row['ParentId']);
+        }
+        return $posts;
+	}
+	
 	// FIN 
 	
 	

@@ -43,7 +43,9 @@
 											<a href="post/confirm_delete/<?= $post->get_postid() ?>/"><i class="fas fa-trash-alt"></i></a>
 										<?php }  ?>
 									<?php } else{?>	
-										<a href="post/confirm_delete/<?= $post->get_postid() ?>/"><i class="fas fa-trash-alt"></i></a>
+										<?php if(count($post->get_comments())== 0){?>
+											<a href="post/confirm_delete/<?= $post->get_postid() ?>/"><i class="fas fa-trash-alt"></i></a>
+										<?php } ?>
 										<?php if($question->authorId == $user->get_id()){ ?>
 											<?php if($post->answer_is_accepted() == true){ ?>
 												<form action="post/accept/<?= $id ?>/<?= $post->get_postid() ?>" method="POST">
@@ -85,9 +87,6 @@
 								<?php foreach ($post->get_comments() as $comment): ?>
 									<li>
 										<?= $comment->body ?> - <?= $comment->get_user_by_userid()->fullName ?>  <?= $comment->get_ago() ?>
-										<?= $comment->get_commentid() ?>
-										
-										<?= Comment::get_postid_by_id($comment->get_commentid()) ?>
 										<?php if($user){?>
 											<?php if($user->get_id() == $comment->userId){?>
 												<a href="comment/confirm_delete/<?= $comment->get_commentid() ?>/" ><i class="fas fa-trash-alt"></i></a>

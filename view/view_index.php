@@ -32,6 +32,8 @@
 						  <li><a class="<?php if($menu == "newest"){ echo "current" ; }  ?>" href="post/index/newest">Newest</a></li>
 						  <li><a class="<?php  if($menu == "votes"){ echo "current"; } ?>"  href="post/index/votes">Votes</a></li>
 						  <li><a class="<?php  if($menu == "unanswered"){ echo "current"; }  ?>"  href="post/index/unanswered">Unanswered</a></li>
+						  <li><a class="<?php  if($menu == "active"){ echo "current"; }  ?>"  href="post/index/active">Active</a></li>
+
 						  <?php if($menu == "tag"){ ?>
 							<li><a class="current">Questions tagged[<?= $tagName ?>]</li>
 						  <?php }?>

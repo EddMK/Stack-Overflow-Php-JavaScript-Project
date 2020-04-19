@@ -47,6 +47,8 @@ class ControllerPost extends Controller {
 				$posts = Post::get_questions_votes();
 			}else if($menu == "unanswered"){
 				$posts = Post::get_questions_unanswered();
+			}else if($menu == "active"){
+				$posts = Post::get_questions_active();
 			}
 		}
 		(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,
