@@ -44,6 +44,7 @@
 								<form action="tag/edit/<?= $tag->get_tagId() ?>" method="post">
 									<input type="text" id="edit" name="edit" value="<?= $tag->tagName ?>" >
 								</form>
+								<a href="tag/confirm_delete/<?= $tag->get_tagId() ?>"><i class="fas fa-trash-alt"></i></a>
 							</td>
 						<?php } ?>
 					</tr>

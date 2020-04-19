@@ -40,6 +40,7 @@ class ControllerComment extends Controller {
 	
 	public function confirm_delete(){
 		$post = false;
+		$controller = 2;
 		$user= $this->get_user_or_false();
 		if($user && isset($_GET["param1"])){
 			$id = $_GET["param1"];
@@ -51,7 +52,7 @@ class ControllerComment extends Controller {
 				$comment->delete_comment();
 				$this->redirect("post","show", $comment->postId );
 			}				
-			(new View("delete"))->show(array("id" => $id,"user" =>$user,"post" => $post));
+			(new View("delete"))->show(array("id" => $id,"user" =>$user,"controller" => $controller));
 		}else{
 			(new View("error"))->show(array());
 		}

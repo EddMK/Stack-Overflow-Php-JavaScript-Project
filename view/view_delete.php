@@ -24,10 +24,12 @@
             <h1>Etes vous sur ?<h1>
 			<p>Voulez vous vraiment supprimer?<p>
 			<p>Ce processus est irréversible.</p>
-			<?php  if($post == true){  ?>
+			<?php  if($controller == 1){  ?>
 				<form id="delete_form" action="post/confirm_delete/<?= $id ?>" method="post">
-			<?php }else{?>
+			<?php }elseif($controller == 2){?>
 				<form id="delete_form" action="comment/confirm_delete/<?= $id ?>" method="post">
+			<?php }else{ ?>
+				<form id="delete_form" action="tag/confirm_delete/<?= $id ?>" method="post">
 			<?php } ?>
 				<input type="submit" name="annuler" value="annuler">
 				<input type="submit" name="supprimer" value="supprimer">

@@ -100,4 +100,10 @@ class Tag extends Model {
 		return $tag;
 	}
 	
+	public function delete_tag(){
+		self::execute("DELETE FROM posttag WHERE TagId = :tagId", 
+		array("tagId"=>$this->get_tagId()));
+		self::execute("DELETE FROM Tag WHERE TagId = :tagId", 
+		array("tagId"=>$this->get_tagId()));
+	}
 }

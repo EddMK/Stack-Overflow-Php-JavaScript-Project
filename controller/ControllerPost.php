@@ -180,7 +180,7 @@ class ControllerPost extends Controller {
 	
 	
 	public function confirm_delete(){
-		$post = true;
+		$controller = 1;
 		$user = $this->get_user_or_false();
 		if(isset($_GET["param1"]) && $user){		
 			$id = $_GET["param1"];
@@ -200,7 +200,7 @@ class ControllerPost extends Controller {
 					$this->redirect("post","index");
 				}
 			}		
-			(new View("delete"))->show(array("id" => $id,"user" =>$user,"post" => $post));
+			(new View("delete"))->show(array("id" => $id,"user" =>$user,"controller" => $controller));
 		}else{
 			(new View("error"))->show(array());
 		}
