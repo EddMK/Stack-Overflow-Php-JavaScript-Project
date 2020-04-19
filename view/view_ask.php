@@ -23,6 +23,10 @@
             <form id="message_form" action="post/ask" method="post">
                 <label for="title">Title</label>
 				<input id="title" name="title" type="text">
+				<label for="choix[]">Tags</label>
+					<?php foreach($tags as $tag){ ?>
+						<input type="checkbox" name="choix[]" value=<?= $tag->get_tagId() ?> > <?= $tag->tagName ?>  
+					<?php } ?>
 				<label for="body">Body</label>
 				<textarea id="body" name="body" rows='3'></textarea>
 				<input id="post" type="submit" value="Post">

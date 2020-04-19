@@ -12,6 +12,12 @@ class ControllerPost extends Controller {
 
 	public function index() {
 		$user= $this->get_user_or_false();
+		$numberQuestions =Post::total_questions();
+		$totalPages = $numberQuestions  / 5;
+		if(is_float($totalPages)){
+			$totalPages =(int) ($totalPages+1);
+		}
+		$currentPage;
 		$tagName = "";
 		$menu="";
 		$search="";
@@ -28,7 +34,13 @@ class ControllerPost extends Controller {
 			}
 			else{
 				$menu = "newest";
-			}		
+			}
+			if(isset($_GET["param2"])){
+				$currentPage = $_GET["param1"];		
+			}
+			else{
+				$currentPage = 1;
+			}
 			if($menu == "newest"){
 				$posts = Post::get_questions_newest();
 			}else if($menu == "votes"){
@@ -37,7 +49,8 @@ class ControllerPost extends Controller {
 				$posts = Post::get_questions_unanswered();
 			}
 		}
-		(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,"tagName" =>$tagName));		
+		(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,
+		"tagName" =>$tagName, "totalPages"=>$totalPages));		
     }
 
 	public function ask(){
@@ -46,25 +59,38 @@ class ControllerPost extends Controller {
 		$errors = [];
 		$checked = false;
 		$user = $this->get_user_or_false();
-		
+		$tags = Tag::get_tags();
+
 		if($user){
+			$choix= array();
 			if (isset($_POST['body']) && isset($_POST['title'])) {
 				$body = $_POST['body'];
-				$title = $_POST['title'];		
+				$title = $_POST['title'];
+				$choix=$_POST['choix'];
+				//var_dump($choix);
 				$authorId = User::get_id_by_userName($user->userName);
 				$post = new Post($authorId,$title,$body ,NULL,NULL);			
 				
 				$errors = $post->validate_question();
 				$checked = true;
 				if(count($errors) == 0){
-					$post->addPost(); 				
+					$post->addPost();	
 				}
 			}		
 			if(($checked == true) && (count($errors) == 0)){
 				$postid = $post->get_postid();
+				//var_dump($choix);
+				if(!empty($choix)){
+					foreach($choix as $key => $val){
+						//var_dump($val);
+						$post->addTag($val);
+					}
+				}
+				
+				
 				$this->redirect("post","show",$postid);				
 			}else{
-				(new View("ask"))->show(array("title" => $title, "body" => $body,"user" => $user, "errors" => $errors));
+				(new View("ask"))->show(array("title" => $title, "body" => $body,"user" => $user, "errors" => $errors, "tags"=>$tags));
 			}
 		}else{
 			(new View("error"))->show(array());
@@ -78,6 +104,7 @@ class ControllerPost extends Controller {
 		$id = "";
 		$question = "";
 		$answerAccepted ="";
+		
 		if(isset($_GET["param1"])){
 			$id = $_GET["param1"];
 			$user = $this->get_user_or_false();
@@ -101,7 +128,7 @@ class ControllerPost extends Controller {
 				}		
 				$reponses = $question->get_answers($question);
 				$posts = array_merge($begin,$reponses);
-				(new View("question"))->show(array("question" => $question,"user" => $user, "errors" => $errors , "posts" =>$posts, "id" =>$id ));	
+				(new View("question"))->show(array("question" => $question,"user" => $user, "errors" => $errors , "posts" =>$posts, "id" =>$id));	
 			}else{
 				(new View("error"))->show(array());
 			}
@@ -211,6 +238,7 @@ class ControllerPost extends Controller {
 		$user=$this->get_user_or_false();
 		$search='';
 		$posts = array();
+		$totalPages = 3;
 		$menu;
 		if(isset($_GET['param1']) && $_GET['param1']=='tag'){
 			$tag = $_GET['param1'];
@@ -220,7 +248,7 @@ class ControllerPost extends Controller {
 				$page = $_GET['param2'];
 				$tag = Tag::get_tag($tagId);
 				$posts = Post::get_questions_bytag($tagId,$page);
-				(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,"tagName" =>$tag->tagName));
+				(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,"tagName" =>$tag->tagName, "totalPages"=>$totalPages));
 			}
 		}	
 	}

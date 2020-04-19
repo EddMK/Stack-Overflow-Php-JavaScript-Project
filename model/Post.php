@@ -91,7 +91,10 @@ class Post extends Model {
     }
 	
 	public static function get_questions_newest() {
-        $query = self::execute("select * from Post where Title IS NOT NULL and Title <>'' order by Timestamp DESC", array());
+        //$offset = ($page-1)*5;
+		//var_dump($offset);
+		$query = self::execute("select * from Post where Title IS NOT NULL and Title <>'' order by Timestamp DESC ",
+		array());
         $data = $query->fetchAll();
         $posts = [];
         foreach ($data as $row) {
@@ -369,7 +372,20 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
         return $tags;
 	}
 	
+	public static function total_questions(){
+		$query = self::execute("SELECT COUNT(*) FROM post where Title IS NOT NULL and Title <>'' ", array());
+        $data = $query->fetchColumn();
+		if($data == false){
+			return 0;
+		}else{
+			return $data;
+		}
+	}
 	
-	
+	public function addTag($tagId){
+		self::execute("INSERT INTO posttag(PostId,TagId) VALUES(:postid,:tagid)", 
+		array("postid"=>$this->get_postid(), "tagid"=>$tagId));
+		return $this;
+	}
 	
 }
