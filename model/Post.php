@@ -388,4 +388,15 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
 		return $this;
 	}
 	
+	public function tagNotChoosed(){
+		$query = self::execute("Select * from Tag where TagId NOT IN (Select TagId from posttag where PostId=:postid)", 
+		array("postid"=>$this->get_postid()));
+        $data = $query->fetchAll();
+		$tags = [];
+        foreach ($data as $row) {
+            $tags[] = new Tag($row['TagName']);
+        }
+        return $tags;
+	}
+	
 }

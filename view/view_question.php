@@ -34,9 +34,8 @@
 						<?php } ?>
 						<p class="asked">
 							Asked <?= $post->get_ago() ?> by <?= $post->get_author_by_authorId()->userName ?> 
-							<?php if($post->get_author_by_authorId()->role == 'admin'){ echo "admin";} ?>
-							<?php if($user){ ?>
-								
+							
+							<?php if($user){ ?>	
 								<?php if($post->authorId == $user->get_id()) {   ?>
 									<a href="post/edit/<?= $post->get_postid() ?>/"><i class="fas fa-edit"></i></a>
 									<?php if($post->is_question()==true) { ?>
@@ -64,7 +63,20 @@
 								<?php }  ?>
 							<?php }  ?>
 						</p>
-						
+						<?php if($post->is_question()==true){?>
+							<?php foreach ($post->get_tags() as $tag){ ?>
+									<a href="post/posts/tag/1/<?= $tag->get_tagId()?>" ><?= $tag->tagName?></a>
+									<a href="post/takeoff_tag/<?= $tag->get_tagId()?>/<?= $post->get_postid() ?>"><i class="fas fa-trash-alt"></i></a>
+							<?php } ?>
+							<form action="post/addtag/<?= $post->get_postid() ?>" method="POST">
+								<select id="tag" name="tag">
+									<?php foreach($post->tagNotChoosed() as $tag) { ?>
+										<option value=<?= $tag->get_tagId() ?>><?= $tag->tagName ?></option>
+									<?php } ?>
+								</select>
+								<input type="submit" value="Ajouter" />
+							</form>
+						<?php } ?>
 						<?php if($post->is_question()==true) {?>
 							<p class="body"><?= $post->body ?> </p>
 						<?php } ?>

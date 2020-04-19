@@ -81,9 +81,11 @@ class ControllerPost extends Controller {
 				$postid = $post->get_postid();
 				//var_dump($choix);
 				if(!empty($choix)){
+					if(count($choix)<= max_tags){
 					foreach($choix as $key => $val){
 						//var_dump($val);
 						$post->addTag($val);
+						}
 					}
 				}
 				
@@ -253,5 +255,30 @@ class ControllerPost extends Controller {
 		}	
 	}
 	
+	public function takeoff_tag(){
+		$tagId;
+		$postId;
+		if(isset($_GET['param1']) && isset($_GET['param2'])){
+			$tagId = $_GET['param1'];
+			$postId = $_GET['param2'];
+			Tag::takeoff($tagId,$postId);
+			$this->redirect("post","show", $postId);
+		}else{
+		}
+	}
 	
+	public function addTag(){
+		$tagId;
+		$postId;
+		if(isset($_GET['param1'])){
+			$postId = $_GET['param1'];
+			$post = Post::get_post($postId);
+			if(isset($_POST['tag'])){
+				$tagId= $_POST['tag'];
+				$post->addTag($tagId);
+				$this->redirect("post","show", $postId);
+			}
+		}else{
+		}
+	}
 }

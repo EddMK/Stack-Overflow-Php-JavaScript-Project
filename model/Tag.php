@@ -101,4 +101,9 @@ class Tag extends Model {
 		self::execute("DELETE FROM Tag WHERE TagId = :tagId", 
 		array("tagId"=>$this->get_tagId()));
 	}
+	
+	public static function takeoff($tagId,$postId){
+		self::execute("DELETE FROM posttag WHERE TagId = :tagId and PostId =:postId", 
+		array("tagId"=>$tagId,"postId"=>$postId));
+	}
 }
