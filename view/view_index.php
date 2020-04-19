@@ -57,6 +57,9 @@
 								<p>
 									Asked <?= $post->get_ago()?> by <?= $author ?>
 									(<?= $post->get_score()?> vote(s),<?= $post->number_of_answers() ?> answer(s))
+									<?php foreach ($post->get_tags() as $tag){ ?>
+										<a href="#" ><?= $tag->tagName?></a>
+									<?php } ?>
 								</p>
 							</li>
 					<?php } ?>

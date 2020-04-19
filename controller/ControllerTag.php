@@ -18,20 +18,7 @@ class ControllerTag extends Controller {
     }
 	
 	public function add(){
-		$user = $this->get_user_or_false();
-		if($user->role === 'admin'){	
-			if(isset($_POST['add'])){
-				$errors =array();
-				$name = $_POST['add'];
-				$tag = new Tag($name);
-				$errors = $tag->validate();
-				if(count($errors) == 0){
-					Tag::addTag($tag->tagName);
-				}else{
-					
-				}
-			}
-		}
+		
 	}
 	
 	public function edit(){

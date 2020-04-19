@@ -348,5 +348,15 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
         return $comments;
 	}
 	
+	public function get_tags(){
+		$query = self::execute("Select TagName From Tag Where TagId In (Select TagId from posttag where PostId=:postid)", 
+		array("postid"=>$this->get_postid()));
+        $data = $query->fetchAll();
+		$tags = [];
+        foreach ($data as $row) {
+            $tags[] = new Tag($row['TagName']);
+        }
+        return $tags;
+	}
 	
 }

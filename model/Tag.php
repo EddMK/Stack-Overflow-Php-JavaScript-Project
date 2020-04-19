@@ -16,11 +16,6 @@ class Tag extends Model {
         $this->tagName = $tagName;
     }
 	
-	public static function addTag($name){
-		self::execute("INSERT INTO tag(TagName) VALUES(:tagName))", 
-		array("tagName" => $name));
-	}
-	
 
 	public function validate(){
 		$errors = array();
