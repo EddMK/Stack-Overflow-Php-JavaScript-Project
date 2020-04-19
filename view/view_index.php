@@ -32,6 +32,9 @@
 						  <li><a class="<?php if($menu == "newest"){ echo "current" ; }  ?>" href="post/index/newest">Newest</a></li>
 						  <li><a class="<?php  if($menu == "votes"){ echo "current"; } ?>"  href="post/index/votes">Votes</a></li>
 						  <li><a class="<?php  if($menu == "unanswered"){ echo "current"; }  ?>"  href="post/index/unanswered">Unanswered</a></li>
+						  <?php if($menu == "tag"){ ?>
+							<li><a class="current">Questions tagged[<?= $tagName ?>]</li>
+						  <?php }?>
 					</ul> 
 				</div>
 				<div class="search">
@@ -58,12 +61,22 @@
 									Asked <?= $post->get_ago()?> by <?= $author ?>
 									(<?= $post->get_score()?> vote(s),<?= $post->number_of_answers() ?> answer(s))
 									<?php foreach ($post->get_tags() as $tag){ ?>
-										<a href="#" ><?= $tag->tagName?></a>
+										<a href="post/posts/tag/1/<?= $tag->get_tagId()?>" ><?= $tag->tagName?></a>
 									<?php } ?>
 								</p>
 							</li>
 					<?php } ?>
 				</ul>
+			</div>
+			<div class="pagination">
+				  <a href="#">&laquo;</a>
+				  <a href="#">1</a>
+				  <a href="#">2</a>
+				  <a href="#">3</a>
+				  <a href="#">4</a>
+				  <a href="#">5</a>
+				  <a href="#">6</a>
+				  <a href="#">&raquo;</a>
 			</div>
 		</div>
     </body>

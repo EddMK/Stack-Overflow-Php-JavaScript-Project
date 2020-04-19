@@ -142,6 +142,16 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
         return $posts;
     }
 	
+	public static function get_questions_bytag($tagId,$pagination){
+		$query = self::execute("select * from post where PostId in (Select PostId from posttag where TagId=:tagId)", array("tagId"=>$tagId));
+        $data = $query->fetchAll();
+        $posts = [];
+        foreach ($data as $row) {
+            $posts[] = new Post($row['AuthorId'], $row['Title'], $row['Body'], $row['AcceptedAnswerId'], $row['ParentId']);
+        }
+        return $posts;
+	}
+	
 	// FIN 
 	
 	
@@ -358,5 +368,8 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
         }
         return $tags;
 	}
+	
+	
+	
 	
 }
