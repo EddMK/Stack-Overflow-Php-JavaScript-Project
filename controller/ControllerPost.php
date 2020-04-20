@@ -62,7 +62,7 @@ class ControllerPost extends Controller {
 		$checked = false;
 		$user = $this->get_user_or_false();
 		$tags = Tag::get_tags();
-
+		$constante = Configuration::get("max_tags");
 		if($user){
 			$choix= array();
 			if (isset($_POST['body']) && isset($_POST['title'])) {
@@ -74,6 +74,10 @@ class ControllerPost extends Controller {
 				$post = new Post($authorId,$title,$body ,NULL,NULL);			
 				
 				$errors = $post->validate_question();
+				if(count($choix)>$constante){
+					$errorTag = "the number of tags must not be more than 5";//change 5
+					array_push($errors,$errorTag);
+				}
 				$checked = true;
 				if(count($errors) == 0){
 					$post->addPost();	
@@ -83,12 +87,10 @@ class ControllerPost extends Controller {
 				$postid = $post->get_postid();
 				//var_dump($choix);
 				if(!empty($choix)){
-					if(count($choix)<= max_tags){
 					foreach($choix as $key => $val){
 						//var_dump($val);
 						$post->addTag($val);
 						}
-					}
 				}
 				
 				
@@ -108,7 +110,7 @@ class ControllerPost extends Controller {
 		$id = "";
 		$question = "";
 		$answerAccepted ="";
-		
+		$constante = Configuration::get("max_tags");
 		if(isset($_GET["param1"])){
 			$id = $_GET["param1"];
 			$user = $this->get_user_or_false();
@@ -132,7 +134,7 @@ class ControllerPost extends Controller {
 				}		
 				$reponses = $question->get_answers($question);
 				$posts = array_merge($begin,$reponses);
-				(new View("question"))->show(array("question" => $question,"user" => $user, "errors" => $errors , "posts" =>$posts, "id" =>$id));	
+				(new View("question"))->show(array("question" => $question,"user" => $user, "errors" => $errors , "posts" =>$posts, "id" =>$id, "constante" => $constante));	
 			}else{
 				(new View("error"))->show(array());
 			}

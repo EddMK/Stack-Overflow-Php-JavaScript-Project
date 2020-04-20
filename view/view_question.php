@@ -70,14 +70,16 @@
 									<a href="post/posts/tag/1/<?= $tag->get_tagId()?>" ><?= $tag->tagName?></a>
 									<a href="post/takeoff_tag/<?= $tag->get_tagId()?>/<?= $post->get_postid() ?>"><i class="fas fa-trash-alt"></i></a>
 							<?php } ?>
-							<form action="post/addtag/<?= $post->get_postid() ?>" method="POST">
-								<select id="tag" name="tag">
-									<?php foreach($post->tagNotChoosed() as $tag) { ?>
-										<option value=<?= $tag->get_tagId() ?>><?= $tag->tagName ?></option>
-									<?php } ?>
-								</select>
-								<input type="submit" value="Ajouter" />
-							</form>
+							<?php if(count($post->get_tags())<$constante){?>
+								<form action="post/addtag/<?= $post->get_postid() ?>" method="POST">
+									<select id="tag" name="tag">
+										<?php foreach($post->tagNotChoosed() as $tag) { ?>
+											<option value=<?= $tag->get_tagId() ?>><?= $tag->tagName ?></option>
+										<?php } ?>
+									</select>
+									<input type="submit" value="Ajouter" />
+								</form>
+							<?php } ?>
 						<?php } ?>
 						<?php if($post->is_question()==true) {?>
 							<p class="body"><?= $post->body ?> </p>
