@@ -146,7 +146,7 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
     }
 	
 	public static function get_questions_bytag($tagId,$pagination){
-		$query = self::execute("select * from post where PostId in (Select PostId from posttag where TagId=:tagId)", array("tagId"=>$tagId));
+		$query = self::execute("select * from post where PostId in (Select PostId from posttag where TagId=:tagId )order by Timestamp DESC", array("tagId"=>$tagId));
         $data = $query->fetchAll();
         $posts = [];
         foreach ($data as $row) {
