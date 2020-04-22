@@ -79,19 +79,20 @@ class Post extends Model {
 	
 	// TRIER QUESTIONS
 	
-	public static function get_searchs($search) {
-        
-		
-		
-		$query = self::execute(" SELECT * FROM `post` WHERE Title LIKE :search OR Body LIKE :search OR
-		AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE :search  OR FullName LIKE :search  OR Email LIKE :search)
-			"
-		, array("search" => $search));
-		
-		
-		
-		
-		
+	public static function get_searchs($search, $page) {
+        $requete = "";
+		if($page == null){
+			$requete = " SELECT * FROM `post` WHERE Title LIKE :search OR Body LIKE :search OR
+			AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE :search  OR FullName LIKE :search  OR Email LIKE :search)";
+		}
+		else{
+			$taille = Configuration::get("size_page");
+			$pagination = ($page - 1)*$taille;
+			$requete = " SELECT * FROM `post` WHERE Title LIKE :search OR Body LIKE :search OR
+			AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE :search  OR FullName LIKE :search  OR Email LIKE :search)
+			LIMIT ".$taille." OFFSET ".$pagination ;
+		}
+		$query = self::execute( $requete, array("search" => $search));
         $data = $query->fetchAll();
         $posts = [];
         foreach ($data as $row) {

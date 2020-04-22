@@ -27,15 +27,13 @@ class ControllerPost extends Controller {
 			$search = $_POST['search'];
 			if(!(strlen(trim($search)) == 0)){
 				$Search ="%".$search."%";
-				
-				
-				$posts = Post::get_searchs($Search);
-				$numberQuestions = count($posts);
+				$numberQuestions = count(Post::get_searchs($Search, null));
+				$posts = Post::get_searchs($Search,1);
 				$totalPages = $numberQuestions  / 5;
 				if(is_float($totalPages)){
 					$totalPages =(int) ($totalPages+1);
 				}
-			}			
+			}
 		}else{
 			if(isset($_GET["param1"])){
 				$menu = $_GET["param1"];		
@@ -57,6 +55,14 @@ class ControllerPost extends Controller {
 				$posts = Post::get_questions_unanswered($currentPage);
 			}else if($menu == "active"){
 				$posts = Post::get_questions_active($currentPage);
+			}else if($menu == "search"){
+				$posts = Post::get_searchs($_GET["param3"],$currentPage);
+				$search = $_GET["param3"];
+				$numberQuestions = count($posts);
+				$totalPages = $numberQuestions  / 5;
+				if(is_float($totalPages)){
+					$totalPages =(int) ($totalPages+1);
+				}
 			}
 		}
 		(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,
