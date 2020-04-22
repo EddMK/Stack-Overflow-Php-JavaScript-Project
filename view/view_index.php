@@ -35,7 +35,7 @@
 						  <li><a class="<?php  if($menu == "active"){ echo "current"; }  ?>"  href="post/index/active">Active</a></li>
 
 						  <?php if($menu == "tag"){ ?>
-							<li><a class="current">Questions tagged[<?= $tagName ?>]</li>
+							<li><a class="current">Questions tagged[<?= $tag->tagName ?>]</li>
 						  <?php }?>
 					</ul> 
 				</div>
@@ -75,11 +75,12 @@
 					  <?php if($menu == "search"){?>
 						<?php $_POST['search']=$search ?>
 						<a href="post/index/<?= $menu ?>/<?= $i ?>/<?= $search ?>"><?= $i ?></a>
-					  <?php }else{?>
+					  <?php }elseif($menu == "tag"){?>
+						<a href="post/posts/tag/<?= $i ?>/<?= $tag->get_tagId()?>" ><?= $i ?> </a>
+					  <?php }else{ ?>
 						<a href="post/index/<?= $menu ?>/<?= $i ?>"><?= $i ?></a>
 					  <?php } ?>
 				  <?php } ?>
-				<a href="#">&raquo;</a>
 			</div>
 		</div>
     </body>

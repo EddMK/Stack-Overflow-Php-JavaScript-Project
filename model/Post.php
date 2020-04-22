@@ -147,8 +147,18 @@ class Post extends Model {
         return $posts;
     }
 	
-	public static function get_questions_bytag($tagId,$pagination){
-		$query = self::execute("select * from post where PostId in (Select PostId from posttag where TagId=:tagId )order by Timestamp DESC", array("tagId"=>$tagId));
+	public static function get_questions_bytag($tagId,$page){
+		$requete="";
+		if($page == 0){
+			$requete="select * from post where PostId in (Select PostId from posttag where TagId=:tagId )order by Timestamp";
+		}else{
+			$taille = Configuration::get("size_page");
+			$pagination = ($page - 1)*$taille;
+			$requete = "select * from post where PostId in (Select PostId from posttag where TagId=:tagId )order by Timestamp DESC LIMIT ".$taille." OFFSET ".$pagination;
+		}
+		$taille = Configuration::get("size_page");
+		$pagination = ($page - 1)*$taille;
+		$query = self::execute($requete, array("tagId"=>$tagId));
         $data = $query->fetchAll();
         $posts = [];
         foreach ($data as $row) {

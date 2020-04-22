@@ -258,7 +258,6 @@ class ControllerPost extends Controller {
 		$user=$this->get_user_or_false();
 		$search='';
 		$posts = array();
-		$totalPages = 3;
 		$menu;
 		if(isset($_GET['param1']) && $_GET['param1']=='tag'){
 			$tag = $_GET['param1'];
@@ -266,9 +265,14 @@ class ControllerPost extends Controller {
 			if(isset($_GET['param2']) && isset($_GET['param3'])){
 				$tagId = $_GET['param3'];
 				$page = $_GET['param2'];
-				$tag = Tag::get_tag($tagId);
+				$tag = Tag::get_tag($tagId);			
+				$numberQuestions = count(Post::get_questions_bytag($tagId,0));
+				$totalPages = $numberQuestions  / 5;
+				if(is_float($totalPages)){
+					$totalPages =(int) ($totalPages+1);
+				}
 				$posts = Post::get_questions_bytag($tagId,$page);
-				(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,"tagName" =>$tag->tagName, "totalPages"=>$totalPages));
+				(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,"tag" =>$tag, "totalPages"=>$totalPages));
 			}
 		}	
 	}
