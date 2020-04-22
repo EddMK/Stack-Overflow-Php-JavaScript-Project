@@ -80,8 +80,18 @@ class Post extends Model {
 	// TRIER QUESTIONS
 	
 	public static function get_searchs($search) {
-        $query = self::execute(" SELECT * FROM `post` WHERE Title LIKE :search OR Body LIKE :search OR
-		AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE :search  OR FullName LIKE :search  OR Email LIKE :search) ", array("search" => $search));
+        
+		
+		
+		$query = self::execute(" SELECT * FROM `post` WHERE Title LIKE :search OR Body LIKE :search OR
+		AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE :search  OR FullName LIKE :search  OR Email LIKE :search)
+			"
+		, array("search" => $search));
+		
+		
+		
+		
+		
         $data = $query->fetchAll();
         $posts = [];
         foreach ($data as $row) {
@@ -90,11 +100,11 @@ class Post extends Model {
         return $posts;
     }
 	
-	public static function get_questions_newest() {
-        //$offset = ($page-1)*5;
-		//var_dump($offset);
-		$query = self::execute("select * from Post where Title IS NOT NULL and Title <>'' order by Timestamp DESC ",
-		array());
+	public static function get_questions_newest($page) {
+        $taille = Configuration::get("size_page");
+		$pagination = ($page - 1)*$taille;
+		$requete = "select * from Post where Title IS NOT NULL and Title <>'' order by Timestamp DESC LIMIT ".$taille." OFFSET ".$pagination ;
+		$query = self::execute($requete,array());
         $data = $query->fetchAll();
         $posts = [];
         foreach ($data as $row) {
@@ -103,30 +113,19 @@ class Post extends Model {
         return $posts;
     }
 	
-	public static function get_questions_votes() {
-        $query = self::execute("SELECT post.*, max_score
-
-FROM post, (
-
-    SELECT parentid, max(score) max_score
-
-    FROM (
-
-        SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score
-
-        FROM post LEFT JOIN vote ON vote.postid = post.postid
-
-        GROUP BY post.postid
-
-    ) AS tbl1
-
-    GROUP by parentid
-
-) AS q1
-
-WHERE post.postid = q1.parentid
-
-ORDER BY q1.max_score DESC, timestamp DESC", array());
+	public static function get_questions_votes($page) {
+        $taille = Configuration::get("size_page");
+		$pagination = ($page - 1)*$taille;
+		$query = self::execute("SELECT post.*, max_score FROM post, ( SELECT parentid, max(score) max_score
+																		FROM (SELECT post.postid, ifnull(post.parentid, post.postid) parentid, ifnull(sum(vote.updown), 0) score
+																				FROM post LEFT JOIN vote ON vote.postid = post.postid
+																				GROUP BY post.postid) 
+																		AS tbl1
+																		GROUP by parentid
+																	) AS q1
+								WHERE post.postid = q1.parentid
+								ORDER BY q1.max_score DESC, timestamp DESC LIMIT ".$taille." OFFSET ".$pagination
+								, array());
         $data = $query->fetchAll();
         $posts = [];
         foreach ($data as $row) {
@@ -135,8 +134,10 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
         return $posts;
     }
 	
-	public static function get_questions_unanswered () {
-        $query = self::execute("select * from Post where Title IS NOT NULL and Title <>''  and AcceptedAnswerId IS NULL order by Timestamp DESC", array());
+	public static function get_questions_unanswered($page) {
+        $taille = Configuration::get("size_page");
+		$pagination = ($page - 1)*$taille;
+		$query = self::execute("select * from Post where Title IS NOT NULL and Title <>''  and AcceptedAnswerId IS NULL order by Timestamp DESC LIMIT ".$taille." OFFSET ".$pagination, array());
         $data = $query->fetchAll();
         $posts = [];
         foreach ($data as $row) {
@@ -155,23 +156,25 @@ ORDER BY q1.max_score DESC, timestamp DESC", array());
         return $posts;
 	}
 	
-	public static function get_questions_active(){
+	public static function get_questions_active($page){
+		$taille = Configuration::get("size_page");
+		$pagination = ($page - 1)*$taille;
 		$query = self::execute("select question.PostId, question.AuthorId, question.Title, question.Body, question.ParentId, question.Timestamp, question.AcceptedAnswerId 
-from post as question, 
-     (select post_updates.postId, max(post_updates.timestamp) as timestamp from (
-        select q.postId as postId, q.timestamp from post q where q.parentId is null
-        UNION
-        select a.parentId as postId, a.timestamp from post a where a.parentId is not null
-        UNION
-        select c.postId as postId, c.timestamp from comment c 
-        UNION 
-        select a.parentId as postId, c.timestamp 
-        from post a, comment c 
-        WHERE c.postId = a.postId and a.parentId is not null
-        ) as post_updates
-      group by post_updates.postId) as last_post_update
-where question.postId = last_post_update.postId and question.parentId is null
-order by last_post_update.timestamp DESC",
+									from post as question, 
+										 (select post_updates.postId, max(post_updates.timestamp) as timestamp from (
+											select q.postId as postId, q.timestamp from post q where q.parentId is null
+											UNION
+											select a.parentId as postId, a.timestamp from post a where a.parentId is not null
+											UNION
+											select c.postId as postId, c.timestamp from comment c 
+											UNION 
+											select a.parentId as postId, c.timestamp 
+											from post a, comment c 
+											WHERE c.postId = a.postId and a.parentId is not null
+											) as post_updates
+										  group by post_updates.postId) as last_post_update
+									where question.postId = last_post_update.postId and question.parentId is null
+									order by last_post_update.timestamp DESC LIMIT ".$taille." OFFSET ".$pagination,
 		array());
         $data = $query->fetchAll();
         $posts = [];

@@ -73,7 +73,11 @@
 			<div class="pagination">
 				  <a href="#">&laquo;</a>
 				  <?php for($i = 1; $i<=$totalPages;$i ++){ ?>
-					  <a href="post/index/<?= $menu ?>/<?= $i ?>"><?= $i ?></a>
+					  <?php if($menu == "search"){?>
+						<a href="post/index/<?= $menu ?>/<?= $_POST['search'] ?>/<?= $i ?>"><?= $i ?></a>
+					  <?php }else{?>
+						<a href="post/index/<?= $menu ?>/<?= $i ?>"><?= $i ?></a>
+					  <?php } ?>
 				  <?php } ?>
 				<a href="#">&raquo;</a>
 			</div>

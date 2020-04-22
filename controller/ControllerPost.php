@@ -12,7 +12,7 @@ class ControllerPost extends Controller {
 
 	public function index() {
 		$user= $this->get_user_or_false();
-		$numberQuestions =Post::total_questions();
+		$numberQuestions =Post::total_questions();//servais a rien => count(post[])
 		$totalPages = $numberQuestions  / 5;
 		if(is_float($totalPages)){
 			$totalPages =(int) ($totalPages+1);
@@ -23,10 +23,18 @@ class ControllerPost extends Controller {
 		$search="";
 		$posts = array();
 		if(isset($_POST['search'])){
-			$search=$_POST['search'];
+			$menu = "search";
+			$search = $_POST['search'];
 			if(!(strlen(trim($search)) == 0)){
 				$Search ="%".$search."%";
+				
+				
 				$posts = Post::get_searchs($Search);
+				$numberQuestions = count($posts);
+				$totalPages = $numberQuestions  / 5;
+				if(is_float($totalPages)){
+					$totalPages =(int) ($totalPages+1);
+				}
 			}			
 		}else{
 			if(isset($_GET["param1"])){
@@ -36,19 +44,19 @@ class ControllerPost extends Controller {
 				$menu = "newest";
 			}
 			if(isset($_GET["param2"])){
-				$currentPage = $_GET["param1"];		
+				$currentPage = $_GET["param2"];		
 			}
 			else{
 				$currentPage = 1;
 			}
 			if($menu == "newest"){
-				$posts = Post::get_questions_newest();
+				$posts = Post::get_questions_newest($currentPage);
 			}else if($menu == "votes"){
-				$posts = Post::get_questions_votes();
+				$posts = Post::get_questions_votes($currentPage);
 			}else if($menu == "unanswered"){
-				$posts = Post::get_questions_unanswered();
+				$posts = Post::get_questions_unanswered($currentPage);
 			}else if($menu == "active"){
-				$posts = Post::get_questions_active();
+				$posts = Post::get_questions_active($currentPage);
 			}
 		}
 		(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,
