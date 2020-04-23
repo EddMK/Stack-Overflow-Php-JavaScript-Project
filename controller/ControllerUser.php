@@ -9,12 +9,6 @@ class ControllerUser extends Controller {
     //si l'utilisateur est conecté, redirige vers son profil.
     //sinon, produit la vue d'accueil.
     public function index() {
-        /*if ($this->user_logged()) {
-            $this->redirect("member", "profile");
-        } else {
-            (new View("index"))->show();
-        }*/
-		
 		$this->redirect("post", "index");
     }
 
@@ -32,7 +26,7 @@ class ControllerUser extends Controller {
                 $this->log_user(User::get_user_by_username($userName));
             }
         }
-        (new View("login"))->show(array("userName" => $userName, "password" => $password, "errors" => $errors));
+        (new View("login"))->show(array("userName" => $userName, "password" => $password, "errors" => $errors, "user" => false));
     }
 
     //gestion de l'inscription d'un utilisateur
@@ -65,8 +59,7 @@ class ControllerUser extends Controller {
 		
         (new View("signup"))->show(array("userName" => $userName, "password" => $password, 
                                          "password_confirm" => $password_confirm, "fullName" => $fullName ,
-										 "email" => $email,"errors" => $errors));
-		
+										 "email" => $email,"errors" => $errors, "user" => false));
     }
 
 }

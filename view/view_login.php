@@ -9,13 +9,7 @@
 		<script src="https://kit.fontawesome.com/9f16cf7640.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <div class="header">
-			<a href="post/index" class="logo">Stuck Overflow</a>
-			<div class = "headerRight">
-				<a href="user/login"><i class="fas fa-sign-in-alt"  style="font-size:40px;color:black"></i></a>
-				<a href="user/signup"><i class="fas fa-user-plus"  style="font-size:40px;color:black;padding-left:20px"></i></a>
-			</div>
-        </div>	
+        <?php include('menu.html'); ?>
         <div class="mainlogin">
 			<h1 class="title">Log In</h1>
             <form action="user/login" method="post">

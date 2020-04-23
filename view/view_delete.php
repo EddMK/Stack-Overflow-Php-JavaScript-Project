@@ -9,16 +9,7 @@
 		<script src="https://kit.fontawesome.com/9f16cf7640.js" crossorigin="anonymous"></script>
     </head>
     <body>
-		<div class="header">
-			<a href="post/index" class="logo">Stuck Overflow</a>
-			<div class = "headerRight">
-					<div class="textHeader">
-						<a href="post/ask"  style="text-decoration: none;color:black">Ask a question</a>
-						<i class="fas fa-user"  style="font-size:40px;color:black;padding-left:20px"></i><?= $user->userName ?>
-						<a href="user/logout"><i class="fas fa-sign-out-alt" style="font-size:40px;color:black;padding-left:20px"></i></a>
-					</div>
-			</div>
-		</div>
+		<?php include('menu.html'); ?>
         <div class = "mainDelete">
 			<i class="fas fa-exclamation-triangle"  style="font-size:70px" ></i>
             <h1>Etes vous sur ?<h1>

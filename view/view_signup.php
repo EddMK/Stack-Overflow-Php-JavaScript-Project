@@ -6,15 +6,10 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
+		<script src="https://kit.fontawesome.com/9f16cf7640.js" crossorigin="anonymous"></script>
     </head>
     <body>
-        <div class="header">
-			<a href="post/index" class="logo">Stuck Overflow</a>
-			<div class = "headerRight">
-				<a href="user/login"><i class="fas fa-sign-in-alt"  style="font-size:40px;color:black"></i></a>
-				<a href="user/signup"><i class="fas fa-user-plus"  style="font-size:40px;color:black;padding-left:20px"></i></a>
-			</div>
-        </div>
+        <?php include('menu.html'); ?>
         <div class="mainlogin">
             <h1 class="title">Sign up</h1>
             <form id="signupForm" action="user/signup" method="post">
