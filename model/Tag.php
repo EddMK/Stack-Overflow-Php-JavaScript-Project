@@ -102,6 +102,12 @@ class Tag extends Model {
 		array("tagId"=>$this->get_tagId()));
 	}
 	
+	public function add_tag(){
+		self::execute("INSERT INTO tag(TagName) VALUES(:tagName)", 
+		array("tagName"=>$this->tagName));
+		
+	}
+	
 	public static function takeoff($tagId,$postId){
 		self::execute("DELETE FROM posttag WHERE TagId = :tagId and PostId =:postId", 
 		array("tagId"=>$tagId,"postId"=>$postId));

@@ -18,7 +18,23 @@ class ControllerTag extends Controller {
     }
 	
 	public function add(){
-		
+		$user = $this->get_user_or_false();
+		if($user->role === 'admin'){
+			if(isset($_POST['add'])){
+				$name = $_POST['add'];
+				$tag = new Tag($name);
+				$errors = array();
+				$errors = $tag->validate();
+				if(count($errors) == 0){
+					$tag->add_tag();
+					$this->redirect("tag","index");
+				}
+				$tags = Tag::get_tags();
+				(new View("tag"))->show(array("user" => $user, "tags" => $tags, "errors" => $errors));
+			}
+		}else{
+				(new View("error"))->show(array());
+			}
 	}
 	
 	public function edit(){
