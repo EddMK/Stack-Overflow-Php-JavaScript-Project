@@ -191,7 +191,9 @@ class ControllerPost extends Controller {
 			$errors= array();
 			if(isset($_POST['modifier'])){		
 				$body = $_POST['body'];
-				$title =$_POST['title'];
+				if(isset($_POST['title'])){	
+					$title =$_POST['title'];
+				}
 				$post = new Post($postid,$title,$body ,NULL,NULL);
 				if($is_question == false){	
 					$errors = $post->validate_answer();
@@ -240,10 +242,14 @@ class ControllerPost extends Controller {
 				}
 			}
 			if(isset($_POST['supprimer'])){
-				Post::deletePost($id);
 				if($post->title =="" || $post->title == NULL){//reponse OK
+					if($post->answer_is_accepted()){
+						Post::addAccepterAnswer($post->parentId,NULL);
+					}
+					Post::deletePost($id);
 					$this->redirect("post","show", $post->parentId);
 				}else{//question
+					Post::deletePost($id);
 					$this->redirect("post","index");
 				}
 			}		
