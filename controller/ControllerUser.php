@@ -20,7 +20,6 @@ class ControllerUser extends Controller {
         if (isset($_POST['userName']) && isset($_POST['password'])) { //note : pourraient contenir des chaînes vides
             $userName = $_POST['userName'];
             $password = $_POST['password'];
-
             $errors = User::validate_login($userName, $password);
             if (empty($errors)) {
                 $this->log_user(User::get_user_by_username($userName));

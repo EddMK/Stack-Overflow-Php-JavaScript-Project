@@ -82,8 +82,9 @@ class ControllerPost extends Controller {
 			if (isset($_POST['body']) && isset($_POST['title'])) {
 				$body = $_POST['body'];
 				$title = $_POST['title'];
-				$choix=$_POST['choix'];
-				//var_dump($choix);
+				if(isset($_POST['choix'])){
+					$choix=$_POST['choix'];
+				}
 				$authorId = User::get_id_by_userName($user->userName);
 				$post = new Post($authorId,$title,$body ,NULL,NULL);			
 				
@@ -99,10 +100,8 @@ class ControllerPost extends Controller {
 			}		
 			if(($checked == true) && (count($errors) == 0)){
 				$postid = $post->get_postid();
-				//var_dump($choix);
 				if(!empty($choix)){
 					foreach($choix as $key => $val){
-						//var_dump($val);
 						$post->addTag($val);
 						}
 				}
@@ -302,5 +301,11 @@ class ControllerPost extends Controller {
 			}
 		}else{
 		}
+	}
+	
+	public function statistique(){
+		$user = $this->get_user_or_false();
+		(new View("stat"))->show(array("user" => $user));
+
 	}
 }

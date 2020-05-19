@@ -157,7 +157,7 @@ class User extends Model {
                 $errors[] = "Wrong password. Please try again.";
             }
         } else { 
-            $errors[] = "Can't find a member with the pseudo '$pseudo'. Please sign up.";
+            $errors[] = "Can't find a member with the pseudo '$userName'. Please sign up.";
         }
         return $errors;
     }

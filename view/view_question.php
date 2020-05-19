@@ -16,7 +16,12 @@
 						<?php if($post->is_question()==true) {?>
 								<h1 class="titleQuestion"><?= $post->title ?></h1>
 						<?php } else{ ?>
-								<p class="body"><?= $post->body ?> </p>
+								<p class="body">
+									<?php 
+										$Parsedown = new Parsedown();
+										echo $Parsedown->text($post->body);
+									?>
+								</p>
 						<?php } ?>
 						<p class="asked">
 							Asked <?= $post->get_ago() ?> by <?= $post->get_author_by_authorId()->userName ?> 
@@ -68,13 +73,22 @@
 							<?php } ?>
 						<?php } ?>
 						<?php if($post->is_question()==true) {?>
-							<p class="body"><?= $post->body ?> </p>
+							<p class="body">
+								<?php 
+									$Parsedown = new Parsedown();
+									echo $Parsedown->text($post->body);
+								?>
+							</p>
 						<?php } ?>
 						<?php if(count($post->get_comments())!= 0){  ?>
 							<ul>
 								<?php foreach ($post->get_comments() as $comment): ?>
 									<li>
-										<?= $comment->body ?> - <?= $comment->get_user_by_userid()->fullName ?>  <?= $comment->get_ago() ?>
+										<?php 
+											$Parsedown = new Parsedown();
+											echo $Parsedown->text($comment->body);
+										?>
+										- <?= $comment->get_user_by_userid()->fullName ?>  <?= $comment->get_ago() ?>
 										<?php if($user){?>
 											<?php if($user->get_id() == $comment->userId){?>
 												<a href="comment/confirm_delete/<?= $comment->get_commentid() ?>/" ><i class="fas fa-trash-alt"></i></a>

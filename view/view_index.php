@@ -43,7 +43,12 @@
 							?>
 							<li>
 								<p><a href="post/show/<?= $post->get_postid()?>"  > <?= $title ?> </a> </p>
-								<p><?= $body ?> </p>
+								<p>
+									<?php 
+										$Parsedown = new Parsedown();
+										echo $Parsedown->text($post->body);
+									?>
+								</p>
 								<p>
 									Asked <?= $post->get_ago()?> by <?= $author ?>
 									(<?= $post->get_score()?> vote(s),<?= $post->number_of_answers() ?> answer(s))
