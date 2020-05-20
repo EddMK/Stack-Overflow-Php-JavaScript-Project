@@ -45,11 +45,18 @@ class ControllerComment extends Controller {
 		if($user && isset($_GET["param1"])){
 			$id = $_GET["param1"];
 			$comment= Comment::get_comment_by_id($id);
-			if(isset($_POST['annuler'])){		
+			$post = Post::get_post($comment->postId);
+			if(isset($_POST['annuler'])){	
+				if($post->is_question() == false){
+					$this->redirect("post","show", $post->parentId );
+				}
 				$this->redirect("post","show", $comment->postId);
 			}
 			if(isset($_POST['supprimer'])){
 				$comment->delete_comment();
+				if($post->is_question() == false){
+					$this->redirect("post","show", $post->parentId );
+				}
 				$this->redirect("post","show", $comment->postId );
 			}				
 			(new View("delete"))->show(array("id" => $id,"user" =>$user,"controller" => $controller));
