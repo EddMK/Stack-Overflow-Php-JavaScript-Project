@@ -12,8 +12,8 @@ class ControllerTag extends Controller {
 
 	public function index(){
 		$user= $this->get_user_or_false();
-		$tags = Tag::get_tags();
 		$errors = null;
+		$tags = Tag::get_tags();
 		(new View("tag"))->show(array("user" => $user, "tags" => $tags, "errors" => $errors));
     }
 	
@@ -46,13 +46,15 @@ class ControllerTag extends Controller {
 					$name = $_POST['edit'];
 					$newTag = new Tag($name);
 					$errors = $newTag->validate();
-					var_dump($errors);
+					var_dump($id);
 					if(count($errors) == 0){
 						Tag::editTag($name,$id);
+						$this->redirect("tag","index");
+					}else{
+						$tags = Tag::get_tags();
+						(new View("tag"))->show(array("user" => $user, "tags" => $tags, "errors" => $errors));
 					}
-					
 				}
-				$this->redirect("tag","index");
 			}else{
 				(new View("error"))->show(array());
 			}

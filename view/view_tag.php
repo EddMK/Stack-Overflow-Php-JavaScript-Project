@@ -28,18 +28,21 @@
 							<td>
 								<form action="tag/edit/<?= $tag->get_tagId() ?>" method="post">
 									<input type="text" id="edit" name="edit" value="<?= $tag->tagName ?>" >
+									<button type="submit"><i class="fas fa-edit"></i></button>
 								</form>
 								<a href="tag/confirm_delete/<?= $tag->get_tagId() ?>"><i class="fas fa-trash-alt"></i></a>
 							</td>
-						<?php } ?>
+						<?php  }  ?>
 					</tr>
 				<?php } ?>
 			  </tbody>
 			</table>
-			<form action="tag/add" method="post" >
-				<input type="text" id="add" name="add">
-				<button type="button"><i class="fas fa-plus-circle"></i></button>
-			</form>
+			<?php if($user == true && $user->is_admin()==true){ ?>
+				<form action="tag/add" method="post" >
+					<input type="text" id="add" name="add">
+					<button type="submit"><i class="fas fa-plus-circle"></i></button>
+				</form>
+			<?php } ?>
 			<?php if (count($errors) != 0){ ?>
                 <div class='errors'>
                     <p>Errors :</p>
