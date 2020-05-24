@@ -19,7 +19,7 @@ class ControllerTag extends Controller {
 	
 	public function add(){
 		$user = $this->get_user_or_false();
-		if($user->role === 'admin'){
+		if($user && $user->role === 'admin'){
 			if(isset($_POST['add'])){
 				$name = $_POST['add'];
 				$tag = new Tag($name);
@@ -33,13 +33,13 @@ class ControllerTag extends Controller {
 				(new View("tag"))->show(array("user" => $user, "tags" => $tags, "errors" => $errors));
 			}
 		}else{
-				(new View("error"))->show(array());
-			}
+			(new View("error"))->show(array("user" => $user, "error" => "URL Error"));
+		}
 	}
 	
 	public function edit(){
 		$user = $this->get_user_or_false();
-		if($user->role === 'admin'){
+		if($user && $user->role === 'admin'){
 			if(isset($_GET['param1'])){
 				$id = $_GET['param1'];
 				if(isset($_POST['edit'])){
@@ -56,17 +56,17 @@ class ControllerTag extends Controller {
 					}
 				}
 			}else{
-				(new View("error"))->show(array());
+				(new View("error"))->show(array("user" => $user, "error" => "URL Error"));
 			}
 		}else{
-			(new View("error"))->show(array());
+			(new View("error"))->show(array("user" => $user, "error" => "URL Error"));
 		}
 	}
 	
 	public function confirm_delete(){
 		$controller = 3;
 		$user = $this->get_user_or_false();
-		if($user->role === 'admin'){
+		if($user && $user->role === 'admin'){
 			if(isset($_GET['param1'])){
 				$id = $_GET['param1'];
 				$tag= Tag::get_tag($id);
@@ -79,10 +79,10 @@ class ControllerTag extends Controller {
 				}
 				(new View("delete"))->show(array("id" => $id,"user" =>$user,"controller" => $controller));
 			}else{
-				(new View("error"))->show(array());
+				(new View("error"))->show(array("user" => $user, "error" => "URL Error"));
 			}
 		}else{
-			(new View("error"))->show(array());
+			(new View("error"))->show(array("user" => $user, "error" => "URL Error"));
 		}
 	}
 	

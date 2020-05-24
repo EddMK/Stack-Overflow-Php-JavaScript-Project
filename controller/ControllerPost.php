@@ -281,6 +281,7 @@ class ControllerPost extends Controller {
 		$user=$this->get_user_or_false();
 		$search='';
 		$posts = array();
+		$error = "URL Error";
 		$menu;
 		if(isset($_GET['param1']) && $_GET['param1']=='tag'){
 			$tag = $_GET['param1'];
@@ -296,25 +297,32 @@ class ControllerPost extends Controller {
 				}
 				$posts = Post::get_questions_bytag($tagId,$page);
 				(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,"tag" =>$tag, "totalPages"=>$totalPages));
+			}else{
+				(new View("error"))->show(array("user" => $user,"error" => $error));
 			}
+		}else{
+			(new View("error"))->show(array("user" => $user,"error" => $error));
 		}	
 	}
 	
 	public function takeoff_tag(){
 		$tagId;
 		$postId;
+		$user=$this->get_user_or_false();
 		if(isset($_GET['param1']) && isset($_GET['param2'])){
 			$tagId = $_GET['param1'];
 			$postId = $_GET['param2'];
 			Tag::takeoff($tagId,$postId);
 			$this->redirect("post","show", $postId);
 		}else{
+			(new View("error"))->show(array("user" => $user,"error" => "URL Error"));
 		}
 	}
 	
 	public function addTag(){
 		$tagId;
 		$postId;
+		$user=$this->get_user_or_false();
 		if(isset($_GET['param1'])){
 			$postId = $_GET['param1'];
 			$post = Post::get_post($postId);
@@ -324,6 +332,7 @@ class ControllerPost extends Controller {
 				$this->redirect("post","show", $postId);
 			}
 		}else{
+			(new View("error"))->show(array("user" => $user,"error" => "URL Error"));
 		}
 	}
 	

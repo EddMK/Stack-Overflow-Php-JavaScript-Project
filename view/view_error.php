@@ -12,7 +12,7 @@
 		<?php include('menu.html'); ?>
 		<div class = "mainDelete">
 			<i class="fas fa-times"  style="font-size:70px" ></i>
-            <h1>URL Error</h1>    
+            <h1>Error</h1>    
 			<p><?= $error ?></p>
         </div>
 	</body>

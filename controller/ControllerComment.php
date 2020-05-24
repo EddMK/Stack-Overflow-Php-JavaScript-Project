@@ -9,7 +9,7 @@ require_once 'framework/Controller.php';
 class ControllerComment extends Controller {
 
 	public function index() {
-				
+		$this->redirect("post","index");
     }
 	
 	public function add(){
