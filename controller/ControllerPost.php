@@ -12,8 +12,9 @@ class ControllerPost extends Controller {
 
 	public function index() {
 		$user= $this->get_user_or_false();
+		$constante = Configuration::get("size_page");
 		$numberQuestions =Post::total_questions();//servais a rien => count(post[])
-		$totalPages = $numberQuestions  / 5;
+		$totalPages = $numberQuestions  / $constante;
 		if(is_float($totalPages)){
 			$totalPages =(int) ($totalPages+1);
 		}
@@ -29,7 +30,7 @@ class ControllerPost extends Controller {
 				$Search ="%".$search."%";
 				$numberQuestions = count(Post::get_searchs($Search, null));
 				$posts = Post::get_searchs($Search,1);
-				$totalPages = $numberQuestions  / 5;
+				$totalPages = $numberQuestions  / $constante;
 				if(is_float($totalPages)){
 					$totalPages =(int) ($totalPages+1);
 				}
@@ -59,7 +60,7 @@ class ControllerPost extends Controller {
 				$posts = Post::get_searchs($_GET["param3"],$currentPage);
 				$search = $_GET["param3"];
 				$numberQuestions = count($posts);
-				$totalPages = $numberQuestions  / 5;
+				$totalPages = $numberQuestions  / $constante;
 				if(is_float($totalPages)){
 					$totalPages =(int) ($totalPages+1);
 				}
@@ -124,6 +125,7 @@ class ControllerPost extends Controller {
 		$question = "";
 		$answerAccepted ="";
 		$constante = Configuration::get("max_tags");
+		$numberTagsTotal = count(Tag::get_tags());
 		if(isset($_GET["param1"])){
 			$id = $_GET["param1"];
 			$user = $this->get_user_or_false();
@@ -147,7 +149,8 @@ class ControllerPost extends Controller {
 				}		
 				$reponses = $question->get_answers($question);
 				$posts = array_merge($begin,$reponses);
-				(new View("question"))->show(array("question" => $question,"user" => $user, "errors" => $errors , "posts" =>$posts, "id" =>$id, "constante" => $constante));	
+				(new View("question"))->show(array("question" => $question,"user" => $user, "errors" => $errors , "posts" =>$posts, "id" =>$id
+				, "constante" => $constante, "numberTagsTotal" => $numberTagsTotal ));	
 			}else{
 				(new View("error"))->show(array());
 			}
@@ -249,6 +252,20 @@ class ControllerPost extends Controller {
 					Post::deletePost($id);
 					$this->redirect("post","show", $post->parentId);
 				}else{//question
+					if($post->number_of_answers()!=0){
+						if($post->acceptedAnswerId !== NULL){
+							$acceptedAnswer = Post::get_post($post->acceptedAnswerId);
+							Post::deletePost($acceptedAnswer->get_postid());
+						}
+						foreach($post->get_answers($post) as $answer){
+							Post::deletePost($answer->get_postid());
+						}
+					}
+					if(count($post->get_comments())!= 0){
+						foreach ($post->get_comments() as $comment){
+							$comment->delete_comment();
+						}
+					}
 					Post::deletePost($id);
 					$this->redirect("post","index");
 				}
@@ -258,6 +275,7 @@ class ControllerPost extends Controller {
 			(new View("error"))->show(array());
 		}
 	}
+	
 	
 	public function posts(){
 		$user=$this->get_user_or_false();

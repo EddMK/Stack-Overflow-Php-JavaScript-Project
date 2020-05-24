@@ -25,16 +25,15 @@
 						<?php } ?>
 						<p class="asked">
 							Asked <?= $post->get_ago() ?> by <?= $post->get_author_by_authorId()->userName ?> 
-							
-							<?php if($user){ ?>	
-								<?php if($post->authorId == $user->get_id()) {   ?>
+							<?php if($user){ ?>
+								<?php if($post->authorId == $user->get_id()  || $user->role=="admin") {   ?>
 									<a href="post/edit/<?= $post->get_postid() ?>/"><i class="fas fa-edit"></i></a>
 									<?php if($post->is_question()==true) { ?>
-										<?php if($post->number_of_answers()==0){   ?>
+										<?php if(($post->number_of_answers()==0 &&  count($post->get_comments())== 0) || $user->role=="admin" ){   ?>
 											<a href="post/confirm_delete/<?= $post->get_postid() ?>/"><i class="fas fa-trash-alt"></i></a>
 										<?php }  ?>
 									<?php } else{?>	
-										<?php if(count($post->get_comments())== 0){?>
+										<?php if(count($post->get_comments())== 0 ){?>
 											<a href="post/confirm_delete/<?= $post->get_postid() ?>/"><i class="fas fa-trash-alt"></i></a>
 										<?php } ?>
 										<?php if($question->authorId == $user->get_id()){ ?>
@@ -56,20 +55,28 @@
 								<?php }  ?>
 							<?php }  ?>
 						</p>
-						<?php if($post->is_question()==true){?>
+						<?php if($post->is_question()==true ){?>
 							<?php foreach ($post->get_tags() as $tag){ ?>
 									<a href="post/posts/tag/1/<?= $tag->get_tagId()?>" ><?= $tag->tagName?></a>
-									<a href="post/takeoff_tag/<?= $tag->get_tagId()?>/<?= $post->get_postid() ?>"><i class="fas fa-trash-alt"></i></a>
-							<?php } ?>
-							<?php if(count($post->get_tags())<$constante){?>
-								<form action="post/addtag/<?= $post->get_postid() ?>" method="POST">
-									<select id="tag" name="tag">
-										<?php foreach($post->tagNotChoosed() as $tag) { ?>
-											<option value=<?= $tag->get_tagId() ?>><?= $tag->tagName ?></option>
+									<?php if($user){?>  
+										<?php if($post->authorId == $user->get_id()  || $user->role=="admin"){ ?>
+											<a href="post/takeoff_tag/<?= $tag->get_tagId()?>/<?= $post->get_postid() ?>"><i class="fas fa-trash-alt"></i></a>
 										<?php } ?>
-									</select>
-									<input type="submit" value="Ajouter" />
-								</form>
+									<?php } ?>
+							<?php } ?>
+							<?php if($user){?>  
+								<?php if($post->authorId == $user->get_id()  || $user->role=="admin"){ ?>
+									<?php if(count($post->get_tags())<$constante &&  count($post->get_tags())< $numberTagsTotal ){?>
+										<form action="post/addtag/<?= $post->get_postid() ?>" method="POST">
+											<select id="tag" name="tag">
+												<?php foreach($post->tagNotChoosed() as $tag) { ?>
+													<option value=<?= $tag->get_tagId() ?>><?= $tag->tagName ?></option>
+												<?php } ?>
+											</select>
+											<input type="submit" value="Ajouter" />
+										</form>
+									<?php } ?>
+								<?php } ?>
 							<?php } ?>
 						<?php } ?>
 						<?php if($post->is_question()==true) {?>
@@ -90,7 +97,7 @@
 										?>
 										- <?= $comment->get_user_by_userid()->fullName ?>  <?= $comment->get_ago() ?>
 										<?php if($user){?>
-											<?php if($user->get_id() == $comment->userId){?>
+											<?php if($user->get_id() == $comment->userId || $user->is_admin()){?>
 												<a href="comment/confirm_delete/<?= $comment->get_commentid() ?>/" ><i class="fas fa-trash-alt"></i></a>
 												<a href="comment/edit/<?= $comment->get_commentid() ?>/"><i class="fas fa-edit"></i></a>
 											<?php }?>

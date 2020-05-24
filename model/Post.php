@@ -58,15 +58,6 @@ class Post extends Model {
 		return $this;
 	}
 	
-/*	
-	public function markdown($texte){
-		$Parsedown = new Parsedown();
-		$Parsedown->setSafeMode(true);
-		$return = $Parsedown->text($texte);
-		return $return;
-	}
-*/
-	
 	public static function get_questions($user) {
         $query = self::execute("select * from Post where AuthorId = :userId and Title IS NOT NULL order by Timestamp DESC", array("userId" => $user->get_id()));
         $data = $query->fetchAll();

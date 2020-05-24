@@ -14,7 +14,12 @@
 				<?php if($post->is_question()){ ?>
 					<h1 class="titleQuestion"><?= $post->title ?></h1>
 				<?php }?>
-				<p class="body"><?= $post->body ?></p>
+				<p class="body">
+					<?php 
+						$Parsedown = new Parsedown();
+						echo $Parsedown->text($post->body);
+					?>
+				</p>
 		</div>
 		<div class = "Repondre">
 			<form id="add_form" action="comment/add/<?= $postid ?>" method="post">
