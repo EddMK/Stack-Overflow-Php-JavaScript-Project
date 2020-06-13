@@ -383,7 +383,7 @@ class Post extends Model {
 	}
 	
 	public function get_comments(){
-		$query = self::execute("select * from comment WHERE PostId=:postid order by Timestamp DESC", array("postid"=>$this->get_postid()));
+		$query = self::execute("select * from comment WHERE PostId=:postid order by Timestamp ASC", array("postid"=>$this->get_postid()));
         $data = $query->fetchAll();
 		$comments = [];
         foreach ($data as $row) {
@@ -428,6 +428,49 @@ class Post extends Model {
             $tags[] = new Tag($row['TagName']);
         }
         return $tags;
+	}
+	
+	public static function totalActions($dateLimit,$nbrMax){
+		$query = self::execute("SELECT UserName, postactions+commentactions as totalactions  
+								FROM (SELECT user.*, (SELECT count(*) FROM post WHERE post.AuthorId = user.UserId  and post.Timestamp > :dateLimit) as postactions, 
+								(SELECT count(*) FROM comment WHERE comment.UserId = user.UserId and comment.Timestamp > :dateLimit) as commentactions FROM user) as t1
+								ORDER BY totalactions DESC
+								LIMIT ".$nbrMax, 
+		array("dateLimit"=>$dateLimit));
+		$data = $query->fetchAll();
+		return $data;
+	}
+	
+	public static function get_timeago($dateNow,$dateCurrent){
+		$diff = $dateNow->diff($dateCurrent);
+		$valeur = array($diff->y,$diff->m, $diff->d,$diff->h,$diff->i,$diff->s);
+		$cle = array("year","month","day","hour","minute","seconde");
+		$i = 0;
+		while($i<count($valeur) && $valeur[$i]==0){
+			$i ++;
+		}
+		if($i == 6){
+			return '0 secondes';
+		}else{
+			return $valeur[$i].' '.$cle[$i].' ago';
+		}
+	}
+	
+	
+	public static function getActions($dateLimit,$pseudo){
+		$query = self::execute("SELECT * 
+								FROM 
+									(SELECT Timestamp moment, if(Title='' or Title is null,(SELECT Title FROM post p2 WHERE p1.ParentId = p2.PostId ),Title ) as titre, if(Title='' or Title is null,'create/update response','create/update question' ) as type 
+									FROM post p1 
+									WHERE AuthorId=(SELECT UserId FROM user WHERE UserName = :pseudo) and p1.Timestamp > :dateLimit
+									UNION 
+									SELECT co.Timestamp moment, if( p.Title='' or p.Title is null, (SELECT Title FROM post p2 WHERE p.ParentId = p2.PostId ), p.Title ) as titre, 'create/update comment' as type 
+									FROM comment co, post p 
+									WHERE co.PostId = p.PostId and co.UserId =(SELECT UserId FROM user WHERE UserName = :pseudo)  and co.Timestamp > :dateLimit) as q 
+								ORDER BY moment DESC", 
+		array("dateLimit"=>$dateLimit, "pseudo" => $pseudo));
+		$data = $query->fetchAll();
+		return $data;
 	}
 	
 }

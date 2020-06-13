@@ -33,29 +33,21 @@
 			<div class="Questions">
 				<ul class ="questions">
 					<?php foreach ($posts as $post){ ?>	
-							<?php
-								$title = $post->title;
-								$body = $post->body;
-								$author = $post->get_author_by_authorId()->fullName;
-								$body = preg_replace("/($search)/i","<b>$1</b>",$body);
-								$title = preg_replace("/($search)/i","<b>$1</b>",$title);
-								$author = preg_replace("/($search)/i","<b>$1</b>",$author);
-							?>
 							<li>
-								<p><a href="post/show/<?= $post->get_postid()?>"  > <?= $title ?> </a> </p>
+								<p><a href="post/show/<?= $post->get_postid()?>"  > <?= $post->title ?> </a> </p>
 								<p>
 									<?php 
 										$Parsedown = new Parsedown();
 										echo $Parsedown->text($post->body);
 									?>
 								</p>
-								<p>
-									Asked <?= $post->get_ago()?> by <?= $author ?>
+								<p><b>
+									Asked <?= $post->get_ago()?> by <?= $post->get_author_by_authorId()->fullName ?>
 									(<?= $post->get_score()?> vote(s),<?= $post->number_of_answers() ?> answer(s))
 									<?php foreach ($post->get_tags() as $tag){ ?>
 										<a href="post/posts/tag/1/<?= $tag->get_tagId()?>" ><?= $tag->tagName?></a>
 									<?php } ?>
-								</p>
+								</b></p>
 							</li>
 					<?php } ?>
 				</ul>

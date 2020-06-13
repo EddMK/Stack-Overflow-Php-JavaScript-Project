@@ -7,6 +7,74 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
 		<script src="https://kit.fontawesome.com/9f16cf7640.js" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="lib/jquery-3.5.1.min.js"></script>
+		<script type="text/javascript" src="lib/jquery-validation-1.19.1/jquery.validate.min.js"></script>
+		<script>
+				let id;
+				
+				$.validator.addMethod("regex", function (value, element, pattern) {
+                if (pattern instanceof Array) {
+                    for(p of pattern) {
+                        if (!p.test(value))
+                            return false;
+                    }
+                    return true;
+                } else {
+                    return pattern.test(value);
+                }
+				}, "Please enter a valid input.");
+				
+		
+				$(function(){
+					$(".forms").hide();
+				});
+				
+				
+				function hide_form(a){
+					$("#form"+a).hide();
+					$("#input"+a).show();
+					
+				}
+				
+				
+				function display_href(e,a){
+					e.preventDefault();
+					id = a;
+					$("#input"+id).hide();
+					$("#form"+id).show();
+					$("#form"+id).validate({
+						rules: {
+							comment: {
+								required : true,
+								minlength: 1,
+								regex : /^[a-zA-Z][a-zA-Z0-9]*$/,
+							}
+						},
+						messages: {
+							comment : {
+								required: 'required',
+								minlength: 'minimum 1 characters',
+								regex: 'bad format for pseudo',
+							}
+						}
+					});
+					
+					$("#form"+id).submit(function(){
+						if($("#form"+id).valid()){
+							var comment ;
+							comment = $("#comment"+id).val();
+							$.post("comment/add_comment",{postid : id, comment : comment}, function(donnees){
+								$("#comment"+id).val("");
+								if ($("#comments_post"+id).length == 0){
+									$("#comments_post"+id).html(donnees);
+								}
+								$("#comments_post"+id).append(donnees);
+							});
+						}
+						return false;
+					});	
+				}
+		</script>
     </head>
     <body>
 		<?php include('menu.html'); ?>
@@ -87,8 +155,8 @@
 								?>
 							</p>
 						<?php } ?>
-						<?php if(count($post->get_comments())!= 0){  ?>
-							<ul>
+						<ul id="comments_post<?= $post->get_postid() ?>">
+							<?php if(count($post->get_comments())!= 0){  ?>						
 								<?php foreach ($post->get_comments() as $comment): ?>
 									<li>
 										<?php 
@@ -103,10 +171,9 @@
 											<?php }?>
 										<?php }?>
 									</li>
-								<?php endforeach; ?>
-							</ul>
-						<?php } ?>
-						
+								<?php endforeach; ?>						
+							<?php } ?>
+						</ul>
 					</div>
 					<div class ="vote">
 						<?php if($user){    ?>
@@ -144,9 +211,34 @@
 					</div>
 					<?php if($user){ ?>	
 						<div class="comment">
-							<a href="comment/add/<?= $post->get_postid() ?>" > Ajouter un commentaire </a>	
+							<a href="comment/add/<?= $post->get_postid() ?>" id="input<?= $post->get_postid() ?>"  onclick="display_href(event, <?= $post->get_postid() ?>);" > Ajouter un commentaire </a>	
 						</div>
 					<?php }    ?>
+
+
+					<form id="form<?= $post->get_postid() ?>" class="forms" method="post">
+						<table>
+								<tr>
+									<td>Comment:</td>
+									<td><input id="comment<?= $post->get_postid() ?>" name="comment" type="text" ></td>
+									<td class="errors" id="errComment"></td>
+								</tr>
+						</table>
+						<input type="submit" value="add">
+						<input type="button" value="cancel"  onclick="hide_form(<?= $post->get_postid() ?>);" >
+					</form>
+					<div class="return"></div>
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
 				</div>
 		<?php }?>
 		<div class = "Repondre">

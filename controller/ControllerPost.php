@@ -339,6 +339,47 @@ class ControllerPost extends Controller {
 	public function statistique(){
 		$user = $this->get_user_or_false();
 		(new View("stat"))->show(array("user" => $user));
-
 	}
+	
+	public function graph(){
+		$tableau=array();
+		if(isset($_POST['dateLimit'])){
+			$nbr = Configuration::get("nbr_stat");
+			$date = $_POST['dateLimit'];
+			$tableau = Post::totalActions($date,$nbr);
+			$newTableau = array();			
+			$label = array();
+			$datas = array();
+			foreach($tableau as $elem){
+				$label[] = $elem['UserName'];
+				$datas[] = $elem['totalactions'];
+			}
+			$newTableau["users"] = $label;
+			$newTableau["values"] = $datas;
+			echo json_encode($newTableau);
+		}
+	}
+	//moment type question
+	public function actions(){
+		$tableau=array();
+		if(isset($_POST['dateLimit'],$_POST['pseudo_choisi'])){//pseudo_choisi
+			$date = $_POST['dateLimit'];
+			$pseudo = $_POST['pseudo_choisi'];
+			$tableau= Post::getActions($date,$pseudo);
+			//var_dump($tableau);
+			$newTableau = array();
+			//$dateNow =  date_create();			
+			foreach($tableau as $elem){
+				$a=array();
+				$a["moment"] = $elem["moment"];
+				$a["titre"]=$elem["titre"];
+				$a["type"]=$elem["type"];
+				$newTableau[]=$a;
+			}
+			//var_dump($newTableau);
+			echo json_encode($newTableau);
+		}
+	}
+	
+	
 }

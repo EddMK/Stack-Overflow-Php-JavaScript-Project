@@ -71,17 +71,18 @@ body{
 }
 
 .ul_menu_questions li a.current{
-	color : yellow;
+	color : red;
 }
 
 .ul_menu_questions li a:hover{
 	text-decoration : none;
-	color : black;
+	color : yellow;
 	/*background-color : white;*/
 }
 
 .pagination {
   display: inline-block;
+  background-color : red;
 }
 
 .pagination a {

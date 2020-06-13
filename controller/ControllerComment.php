@@ -12,6 +12,34 @@ class ControllerComment extends Controller {
 		$this->redirect("post","index");
     }
 	
+	
+	public function add_comment(){
+		$user= $this->get_user_or_false();
+		if(isset($_POST["comment"],$_POST["postid"]) && $user){
+			$comment = $_POST["comment"];
+			$postid = $_POST["postid"];
+			$comment = new Comment($user->get_id(),$postid,$comment);
+			$comment->addComment();
+		}
+		?>
+		<li>
+			<?php 
+				$Parsedown = new Parsedown();
+				echo $Parsedown->text($comment->body);
+			?>
+			- <?= $comment->get_user_by_userid()->fullName ?>  <?= $comment->get_ago() ?>
+			<?php if($user){?>
+				<?php if($user->get_id() == $comment->userId || $user->is_admin()){?>
+					<a href="comment/confirm_delete/<?= $comment->get_commentid() ?>/" ><i class="fas fa-trash-alt"></i></a>
+					<a href="comment/edit/<?= $comment->get_commentid() ?>/"><i class="fas fa-edit"></i></a>
+				<?php }?>
+			<?php }?>
+		</li>
+		<?php	
+	}
+	
+	
+	
 	public function add(){
 		$user= $this->get_user_or_false();
 		if($user && isset($_GET["param1"])){
