@@ -73,14 +73,20 @@ class Post extends Model {
 	public static function get_searchs($search, $page) {
         $requete = "";
 		if($page == null){
-			$requete = " SELECT * FROM `post` WHERE Title LIKE :search OR Body LIKE :search OR
-			AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE :search  OR FullName LIKE :search  OR Email LIKE :search)";
+			$requete = "SELECT * 
+						FROM `post` 
+						WHERE PostId IN (SELECT if(title is null or title ='', ParentId,PostId) id 
+										FROM `post` 
+										WHERE Title LIKE :search OR Body LIKE :search OR AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE :search OR FullName LIKE :search OR Email LIKE :search) GROUP BY id)";
 		}
 		else{
 			$taille = Configuration::get("size_page");
 			$pagination = ($page - 1)*$taille;
-			$requete = " SELECT * FROM `post` WHERE Title LIKE :search OR Body LIKE :search OR
-			AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE :search  OR FullName LIKE :search  OR Email LIKE :search)
+			$requete = " SELECT * 
+						FROM `post` 
+						WHERE PostId IN (SELECT if(title is null or title ='', ParentId,PostId) id 
+										FROM `post` 
+										WHERE Title LIKE :search OR Body LIKE :search OR AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE :search OR FullName LIKE :search OR Email LIKE :search) GROUP BY id)
 			LIMIT ".$taille." OFFSET ".$pagination ;
 		}
 		$query = self::execute( $requete, array("search" => $search));
@@ -472,5 +478,24 @@ class Post extends Model {
 		$data = $query->fetchAll();
 		return $data;
 	}
+	
+	
+	/*
+	
+	
+	
+	SELECT * FROM `post` WHERE Title LIKE "%Angular%" OR PostId IN (SELECT if(title is null or title ='', ParentId,PostId) title FROM post WHERE Body LIKE "%Angular%")
+
+
+SELECT if(title is null or title ='', ParentId,PostId) FROM `post` WHERE Title LIKE "%benoit%" OR Body LIKE "%benoit%" OR AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE "%benoit%" OR FullName LIKE "%benoit%" OR Email LIKE "%benoit%")
+	
+
+
+	
+	*/
+	
+	
+	
+	
 	
 }

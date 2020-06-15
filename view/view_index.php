@@ -26,7 +26,8 @@
 				</div>
 				<div class="search">
 					<form action="post/index" method="post" class="search">
-						<input type="text" id="search" name="search" class="search" placeholder="Search...">
+						<input type="text" id="search" name="search" value="<?= $search ?>"  placeholder="Search...">
+						<button type="submit" ><i class="fas fa-search" ></i></button>
 					</form>
 				</div>
 			</div>
@@ -56,11 +57,11 @@
 				  <?php for($i = 1; $i<=$totalPages;$i ++){ ?>
 					  <?php if($menu == "search"){?>
 						<?php $_POST['search']=$search ?>
-						<a href="post/index/<?= $menu ?>/<?= $i ?>/<?= $search ?>"><?= $i ?></a>
+						<a href="post/index/<?= $menu ?>/<?= $i ?>/<?= $search ?>"    class="<?php if($currentPage == $i){ echo "current" ; }  ?>"       ><?= $i ?></a>
 					  <?php }elseif($menu == "tag"){?>
-						<a href="post/posts/tag/<?= $i ?>/<?= $tag->get_tagId()?>" ><?= $i ?> </a>
+						<a href="post/posts/tag/<?= $i ?>/<?= $tag->get_tagId()?>"    class="<?php if($currentPage == $i){ echo "current" ; }  ?>"       ><?= $i ?> </a>
 					  <?php }else{ ?>
-						<a href="post/index/<?= $menu ?>/<?= $i ?>"><?= $i ?></a>
+						<a href="post/index/<?= $menu ?>/<?= $i ?>"    class="<?php if($currentPage == $i){ echo "current" ; }  ?>"    ><?= $i ?></a>
 					  <?php } ?>
 				  <?php } ?>
 			</div>

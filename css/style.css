@@ -1,6 +1,5 @@
 body{
     background: white;
-	/* background-image : url("fondecran.jpg");*/
 	background-size: cover;
 }
 
@@ -31,11 +30,12 @@ body{
 }
 
 .search{
-	position : absolute;
+	/*position : absolute;*/
 	right : 0px;
-	height : 40px; 
-	width : 200px;
-
+	height : 100px; 
+	width : 500 px;
+	display: block;
+	background-color : blue;
 }
 
 
@@ -82,7 +82,7 @@ body{
 
 .pagination {
   display: inline-block;
-  background-color : red;
+  /*background-color : red;*/
 }
 
 .pagination a {
@@ -95,6 +95,11 @@ body{
 .pagination a.active {
   /*background-color: #4CAF50;*/
   color: white;
+}
+
+.pagination a.current {
+  /*background-color: #4CAF50;*/
+  color: orange;
 }
 
 .pagination a:hover:not(.active) {background-color: #ddd;}

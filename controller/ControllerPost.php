@@ -29,6 +29,7 @@ class ControllerPost extends Controller {
 			if(!(strlen(trim($search)) == 0)){
 				$Search ="%".$search."%";
 				$numberQuestions = count(Post::get_searchs($Search, null));
+				$currentPage = 1;
 				$posts = Post::get_searchs($Search,1);
 				$totalPages = $numberQuestions  / $constante;
 				if(is_float($totalPages)){
@@ -67,7 +68,7 @@ class ControllerPost extends Controller {
 			}
 		}
 		(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,
-		"tagName" =>$tagName, "totalPages"=>$totalPages));		
+		"tagName" =>$tagName, "totalPages"=>$totalPages, "currentPage" => $currentPage ));		
     }
 
 	public function ask(){
@@ -288,15 +289,15 @@ class ControllerPost extends Controller {
 			$menu = $tag;
 			if(isset($_GET['param2']) && isset($_GET['param3'])){
 				$tagId = $_GET['param3'];
-				$page = $_GET['param2'];
+				$currentPage = $_GET['param2'];
 				$tag = Tag::get_tag($tagId);			
 				$numberQuestions = count(Post::get_questions_bytag($tagId,0));
 				$totalPages = $numberQuestions  / 5;
 				if(is_float($totalPages)){
 					$totalPages =(int) ($totalPages+1);
 				}
-				$posts = Post::get_questions_bytag($tagId,$page);
-				(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,"tag" =>$tag, "totalPages"=>$totalPages));
+				$posts = Post::get_questions_bytag($tagId,$currentPage);
+				(new View("index"))->show(array("posts" => $posts,"user" => $user, "search" => $search, "menu" => $menu,"tag" =>$tag, "totalPages"=>$totalPages, "currentPage" => $currentPage));
 			}else{
 				(new View("error"))->show(array("user" => $user,"error" => $error));
 			}
