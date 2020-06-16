@@ -6,7 +6,42 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
-		<script src="https://kit.fontawesome.com/9f16cf7640.js" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="lib/jquery-3.5.1.min.js"></script>
+		<script>
+			let page;
+			page = 1;
+			$(function(){
+				$(".questions").empty();
+				$.post("post/newest",{page : page}, function(donnees){
+				//console.log(donnees);
+					$.each(JSON.parse(donnees),function(key,value){
+						var retour_li="<li>";
+						retour_li +="<p><a href='post/show/"+value.PostId+"'  >"+value.Title+" </a> </p>";
+						retour_li +="</li>";
+						//console.log(retour_li);
+						$(".questions").append(retour_li);
+					});	
+				});
+				/*
+				
+				<p><a href="post/show/<?= $post->get_postid()?>"  > <?= $post->title ?> </a> </p>
+								<p>
+									<?php 
+										$Parsedown = new Parsedown();
+										echo $Parsedown->text($post->body);
+									?>
+								</p>
+								<p><b>
+									Asked <?= $post->get_ago()?> by <?= $post->get_author_by_authorId()->fullName ?>
+									(<?= $post->get_score()?> vote(s),<?= $post->number_of_answers() ?> answer(s))
+									<?php foreach ($post->get_tags() as $tag){ ?>
+										<a href="post/posts/tag/1/<?= $tag->get_tagId()?>" ><?= $tag->tagName?></a>
+									<?php } ?>
+								</b></p>
+				
+				*/
+			});
+		</script>
     </head>
     <body>
 		<?php include('menu.html'); ?>
@@ -20,19 +55,19 @@
 						  <li><a class="<?php  if($menu == "active"){ echo "current"; }  ?>"  href="post/index/active">Active</a></li>
 
 						  <?php if($menu == "tag"){ ?>
-							<li><a class="current">Questions tagged[<?= $tag->tagName ?>]</li>
+							<li><a class='current'>Questions tagged[<?= $tag->tagName ?>]</li>
 						  <?php }?>
 					</ul> 
 				</div>
 				<div class="search">
-					<form action="post/index" method="post" class="search">
+					<form action="post/index" method="post" >
 						<input type="text" id="search" name="search" value="<?= $search ?>"  placeholder="Search...">
-						<button type="submit" ><i class="fas fa-search" ></i></button>
+						<button type="submit">submit</button>
 					</form>
 				</div>
 			</div>
 			<div class="Questions">
-				<ul class ="questions">
+				<ul class ="questions" >
 					<?php foreach ($posts as $post){ ?>	
 							<li>
 								<p><a href="post/show/<?= $post->get_postid()?>"  > <?= $post->title ?> </a> </p>
@@ -65,6 +100,7 @@
 					  <?php } ?>
 				  <?php } ?>
 			</div>
+		</div>
 		</div>
     </body>
 </html>

@@ -30,12 +30,8 @@ body{
 }
 
 .search{
-	/*position : absolute;*/
+	position : absolute;
 	right : 0px;
-	height : 100px; 
-	width : 500 px;
-	display: block;
-	background-color : blue;
 }
 
 

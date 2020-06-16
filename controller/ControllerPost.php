@@ -372,13 +372,30 @@ class ControllerPost extends Controller {
 			//$dateNow =  date_create();			
 			foreach($tableau as $elem){
 				$a=array();
-				$a["moment"] = $elem["moment"];
+				$a["moment"] = $elem["moment"];//refaire les dates
 				$a["titre"]=$elem["titre"];
 				$a["type"]=$elem["type"];
 				$newTableau[]=$a;
 			}
 			//var_dump($newTableau);
 			echo json_encode($newTableau);
+		}
+	}
+	
+	
+	public function newest(){
+		if(isset($_POST['page'])){
+			$page = $_POST['page'];
+			$questions = Post::get_newest($page);
+			$nouveauTableau = array();
+			foreach($questions as $question){
+				$a=array();
+				$a["moment"] = $elem["moment"];//refaire les dates
+				$a["titre"]=$elem["titre"];
+				$a["type"]=$elem["type"];
+				$newTableau[]=$a;
+			}
+			echo json_encode($questions);
 		}
 	}
 	
