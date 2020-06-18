@@ -111,15 +111,7 @@ class Post extends Model {
         return $posts;
     }
 	
-	public static function get_newest($page) {
-        $taille = Configuration::get("size_page");
-		$pagination = ($page - 1)*$taille;
-		$requete = "select * from Post where Title IS NOT NULL and Title <>'' order by Timestamp DESC LIMIT ".$taille." OFFSET ".$pagination ;
-		$query = self::execute($requete,array());
-        $data = $query->fetchAll();
-        return $data;
-    }
-	
+
 	public static function get_questions_votes($page) {
         $taille = Configuration::get("size_page");
 		$pagination = ($page - 1)*$taille;
@@ -487,24 +479,5 @@ class Post extends Model {
 		$data = $query->fetchAll();
 		return $data;
 	}
-	
-	
-	/*
-	
-	
-	
-	SELECT * FROM `post` WHERE Title LIKE "%Angular%" OR PostId IN (SELECT if(title is null or title ='', ParentId,PostId) title FROM post WHERE Body LIKE "%Angular%")
 
-
-SELECT if(title is null or title ='', ParentId,PostId) FROM `post` WHERE Title LIKE "%benoit%" OR Body LIKE "%benoit%" OR AuthorId = ANY (SELECT UserId FROM `user` WHERE UserName LIKE "%benoit%" OR FullName LIKE "%benoit%" OR Email LIKE "%benoit%")
-	
-
-
-	
-	*/
-	
-	
-	
-	
-	
 }

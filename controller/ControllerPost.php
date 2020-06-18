@@ -386,16 +386,203 @@ class ControllerPost extends Controller {
 	public function newest(){
 		if(isset($_POST['page'])){
 			$page = $_POST['page'];
-			$questions = Post::get_newest($page);
-			$nouveauTableau = array();
-			foreach($questions as $question){
+			$posts = Post::get_questions_newest($page);
+			$newTableau = array();
+			foreach($posts as $post){
 				$a=array();
-				$a["moment"] = $elem["moment"];//refaire les dates
-				$a["titre"]=$elem["titre"];
-				$a["type"]=$elem["type"];
+				$a["postid"] = $post->get_postid();
+				$a["titre"]= $post->title;
+				$Parsedown = new Parsedown();
+				$a["body"]= $Parsedown->text($post->body);
+				$a["ago"]= $post->get_ago();
+				$a["fullname"]= $post->get_author_by_authorId()->fullName;
+				$a["score"]= $post->get_score();
+				$a["answers"]= $post->number_of_answers();
+				$b = array();
+				foreach ($post->get_tags() as $tag){ 
+					$c = array();
+					$c["tagid"] = $tag->get_tagId();
+					$c["tagname"] = $tag->tagName;	
+					$b[]=$c;
+				}
+				$a["tags"] = $b;
 				$newTableau[]=$a;
 			}
-			echo json_encode($questions);
+			echo json_encode($newTableau);
+		}
+	}
+	
+	public function votes(){
+		if(isset($_POST['page'])){
+			$page = $_POST['page'];
+			$posts = Post::get_questions_votes($page);
+			$newTableau = array();
+			foreach($posts as $post){
+				$a=array();
+				$a["postid"] = $post->get_postid();
+				$a["titre"]= $post->title;
+				$Parsedown = new Parsedown();
+				$a["body"]= $Parsedown->text($post->body);
+				$a["ago"]= $post->get_ago();
+				$a["fullname"]= $post->get_author_by_authorId()->fullName;
+				$a["score"]= $post->get_score();
+				$a["answers"]= $post->number_of_answers();
+				$b = array();
+				foreach ($post->get_tags() as $tag){ 
+					$c = array();
+					$c["tagid"] = $tag->get_tagId();
+					$c["tagname"] = $tag->tagName;	
+					$b[]=$c;
+				}
+				$a["tags"] = $b;
+				$newTableau[]=$a;
+			}
+			echo json_encode($newTableau);
+		}
+	}
+	
+	public function unanswered(){
+		if(isset($_POST['page'])){
+			$page = $_POST['page'];
+			$posts = Post::get_questions_unanswered($page);
+			$newTableau = array();
+			foreach($posts as $post){
+				$a=array();
+				$a["postid"] = $post->get_postid();
+				$a["titre"]= $post->title;
+				$Parsedown = new Parsedown();
+				$a["body"]= $Parsedown->text($post->body);
+				$a["ago"]= $post->get_ago();
+				$a["fullname"]= $post->get_author_by_authorId()->fullName;
+				$a["score"]= $post->get_score();
+				$a["answers"]= $post->number_of_answers();
+				$b = array();
+				foreach ($post->get_tags() as $tag){ 
+					$c = array();
+					$c["tagid"] = $tag->get_tagId();
+					$c["tagname"] = $tag->tagName;	
+					$b[]=$c;
+				}
+				$a["tags"] = $b;
+				$newTableau[]=$a;
+			}
+			echo json_encode($newTableau);
+		}
+	}
+	
+	public function active(){
+		if(isset($_POST['page'])){
+			$page = $_POST['page'];
+			$posts = Post::get_questions_active($page);
+			$newTableau = array();
+			foreach($posts as $post){
+				$a=array();
+				$a["postid"] = $post->get_postid();
+				$a["titre"]= $post->title;
+				$Parsedown = new Parsedown();
+				$a["body"]= $Parsedown->text($post->body);
+				$a["ago"]= $post->get_ago();
+				$a["fullname"]= $post->get_author_by_authorId()->fullName;
+				$a["score"]= $post->get_score();
+				$a["answers"]= $post->number_of_answers();
+				$b = array();
+				foreach ($post->get_tags() as $tag){ 
+					$c = array();
+					$c["tagid"] = $tag->get_tagId();
+					$c["tagname"] = $tag->tagName;	
+					$b[]=$c;
+				}
+				$a["tags"] = $b;
+				$newTableau[]=$a;
+			}
+			echo json_encode($newTableau);
+		}
+	}
+	
+	
+	
+	public function number(){
+		$numberQuestions =Post::total_questions();
+		echo $numberQuestions;
+	}
+	
+	public function search(){
+		if(isset($_POST['page'],$_POST['search'])){
+			$page = $_POST['page'];
+			$search = "%".$_POST['search']."%";
+			$posts = Post:: get_searchs($search, $page);
+			$newTableau = array();
+			foreach($posts as $post){
+				$a=array();
+				$a["postid"] = $post->get_postid();
+				$a["titre"]= $post->title;
+				$Parsedown = new Parsedown();
+				$a["body"]= $Parsedown->text($post->body);
+				$a["ago"]= $post->get_ago();
+				$a["fullname"]= $post->get_author_by_authorId()->fullName;
+				$a["score"]= $post->get_score();
+				$a["answers"]= $post->number_of_answers();
+				$b = array();
+				foreach ($post->get_tags() as $tag){ 
+					$c = array();
+					$c["tagid"] = $tag->get_tagId();
+					$c["tagname"] = $tag->tagName;	
+					$b[]=$c;
+				}
+				$a["tags"] = $b;
+				$newTableau[]=$a;
+			}
+			echo json_encode($newTableau);
+		}
+		
+	}
+	
+	public function numbersearchs(){
+		if(isset($_POST['search'])){
+			$search = "%".$_POST['search']."%";
+			$numberQuestions = count(Post::get_searchs($search, null));
+			
+			echo $numberQuestions;
+		}
+	}
+	
+	public function tag(){
+		if(isset($_POST['page'],$_POST['type'])){
+			$page = $_POST['page'];
+			$tagId = $_POST['type'];
+			$posts = Post:: get_questions_bytag($tagId,$page);
+			$newTableau = array();
+			foreach($posts as $post){
+				$a=array();
+				$a["postid"] = $post->get_postid();
+				$a["titre"]= $post->title;
+				$Parsedown = new Parsedown();
+				$a["body"]= $Parsedown->text($post->body);
+				$a["ago"]= $post->get_ago();
+				$a["fullname"]= $post->get_author_by_authorId()->fullName;
+				$a["score"]= $post->get_score();
+				$a["answers"]= $post->number_of_answers();
+				$b = array();
+				foreach ($post->get_tags() as $tag){ 
+					$c = array();
+					$c["tagid"] = $tag->get_tagId();
+					$c["tagname"] = $tag->tagName;	
+					$b[]=$c;
+				}
+				$a["tags"] = $b;
+				$newTableau[]=$a;
+			}
+			echo json_encode($newTableau);
+		}
+	}
+	
+	
+	public function numbertags(){
+		if(isset($_POST['tagid'])){
+			$tagId = $_POST['tagid'];
+			$posts = Post:: get_questions_bytag($tagId,0);
+			$number = count($posts);
+			echo $number ;
 		}
 	}
 	
