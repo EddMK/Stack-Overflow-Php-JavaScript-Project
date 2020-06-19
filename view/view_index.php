@@ -8,6 +8,7 @@
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
 		<script src="https://kit.fontawesome.com/9f16cf7640.js" crossorigin="anonymous"></script>
 		<script type="text/javascript" src="lib/jquery-3.5.1.min.js"></script>
+		<!---
 		<script>
 			let page,menu,search;
 			page = 1;
@@ -227,6 +228,7 @@
 				
 			}
 		</script>
+		-->
     </head>
     <body>
 		<?php include('menu.html'); ?>

@@ -27,14 +27,7 @@ class ControllerPost extends Controller {
 			$menu = "search";
 			$search = $_POST['search'];
 			if(!(strlen(trim($search)) == 0)){
-				$Search ="%".$search."%";
-				$numberQuestions = count(Post::get_searchs($Search, null));
-				$currentPage = 1;
-				$posts = Post::get_searchs($Search,1);
-				$totalPages = $numberQuestions  / $constante;
-				if(is_float($totalPages)){
-					$totalPages =(int) ($totalPages+1);
-				}
+				$this->redirect("post","index",$menu,1,$search);
 			}
 		}else{
 			if(isset($_GET["param1"])){
@@ -58,9 +51,10 @@ class ControllerPost extends Controller {
 			}else if($menu == "active"){
 				$posts = Post::get_questions_active($currentPage);
 			}else if($menu == "search"){
-				$posts = Post::get_searchs($_GET["param3"],$currentPage);
 				$search = $_GET["param3"];
-				$numberQuestions = count($posts);
+				$Search = "%".$_GET["param3"]."%";
+				$posts = Post::get_searchs($Search,$currentPage);
+				$numberQuestions = count(Post::get_searchs($Search, null));
 				$totalPages = $numberQuestions  / $constante;
 				if(is_float($totalPages)){
 					$totalPages =(int) ($totalPages+1);
