@@ -75,7 +75,7 @@ class ControllerPost extends Controller {
 		$constante = Configuration::get("max_tags");
 		if($user){
 			$choix= array();
-			if (isset($_POST['body']) && isset($_POST['title'])) {
+			if (isset($_POST['body']) && isset($_POST['title'])){
 				$body = $_POST['body'];
 				$title = $_POST['title'];
 				if(isset($_POST['choix'])){
@@ -101,8 +101,6 @@ class ControllerPost extends Controller {
 						$post->addTag($val);
 						}
 				}
-				
-				
 				$this->redirect("post","show",$postid);				
 			}else{
 				(new View("ask"))->show(array("title" => $title, "body" => $body,"user" => $user, "errors" => $errors, "tags"=>$tags));
@@ -139,7 +137,9 @@ class ControllerPost extends Controller {
 					$post = new Post($user->get_id(),"",$reponse,NULL,$question->get_postid());
 					$errors = $post->validate_answer();
 					if(count($errors) == 0){
-						$post->addPost(); 				
+						$post->addPost(); 	
+						$this->redirect("post","show",$id);	
+						
 					}
 				}		
 				$reponses = $question->get_answers($question);
@@ -339,7 +339,7 @@ class ControllerPost extends Controller {
 	public function graph(){
 		$tableau=array();
 		if(isset($_POST['dateLimit'])){
-			$nbr = Configuration::get("nbr_stat");
+			$nbr = Configuration::get("N");
 			$date = $_POST['dateLimit'];
 			$tableau = Post::totalActions($date,$nbr);
 			$newTableau = array();			
@@ -361,18 +361,34 @@ class ControllerPost extends Controller {
 			$date = $_POST['dateLimit'];
 			$pseudo = $_POST['pseudo_choisi'];
 			$tableau= Post::getActions($date,$pseudo);
-			//var_dump($tableau);
 			$newTableau = array();
 			//$dateNow =  date_create();			
 			foreach($tableau as $elem){
 				$a=array();
+				$a["ago"] = $this::get_ago($elem["moment"]);
 				$a["moment"] = $elem["moment"];//refaire les dates
 				$a["titre"]=$elem["titre"];
 				$a["type"]=$elem["type"];
 				$newTableau[]=$a;
 			}
-			//var_dump($newTableau);
 			echo json_encode($newTableau);
+		}
+	}
+	
+	public static function get_ago($date){
+		$dateNow =  date_create();
+		$dateThis = new DateTime($date);
+		$diff = $dateNow->diff($dateThis);
+		$valeur = array($diff->y,$diff->m, $diff->d,$diff->h,$diff->i,$diff->s);
+		$cle = array("year","month","day","hour","minute","seconde");
+		$i = 0;
+		while($i<count($valeur) && $valeur[$i]==0){
+			$i ++;
+		}
+		if($i == 6){
+			return '0 secondes';
+		}else{
+			return $valeur[$i].' '.$cle[$i].' ago';
 		}
 	}
 	

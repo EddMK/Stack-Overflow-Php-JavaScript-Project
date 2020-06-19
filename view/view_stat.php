@@ -54,8 +54,9 @@
 						var obj = jQuery.parseJSON(donnees);
 						abcisse = obj.users
 						ordonnee = obj.values;
-						chartx.destroy();
-						chartx = showGraphic(abcisse,ordonnee);
+						chartx.data.labels = abcisse;
+						chartx.data.datasets[0].data = ordonnee;						
+						chartx.update();
 					});
 				});
 				$("#period").change(function() {
@@ -67,8 +68,9 @@
 						var obj = jQuery.parseJSON(donnees);
 						abcisse = obj.users
 						ordonnee = obj.values;
-						chartx.destroy();
-						chartx = showGraphic(abcisse,ordonnee);
+						chartx.data.labels = abcisse;
+						chartx.data.datasets[0].data = ordonnee;
+						chartx.update();
 					});					
 				});	
 			});
@@ -138,7 +140,7 @@
 							var retour_table = '<thead><tr><th>Moment</th><th>Type</th><th>Question</th></tr></thead><tbody>';
 							$.each(JSON.parse(donnees),function(key,value){
 								retour_table += '<tr>';
-								retour_table += '<td>'+value.moment+'</td>';
+								retour_table += '<td>'+value.ago+'</td>';
 								retour_table += '<td>'+value.titre+'</td>';
 								retour_table += '<td>'+value.type+'</td>';
 								retour_table += '</tr>';

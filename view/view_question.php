@@ -27,6 +27,11 @@
 		
 				$(function(){
 					$(".forms").hide();
+					
+					/*
+					pour chaque poste on rajoute le formulaire
+					
+					*/
 				});
 				
 				

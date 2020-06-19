@@ -441,6 +441,7 @@ class Post extends Model {
 		$query = self::execute("SELECT UserName, postactions+commentactions as totalactions  
 								FROM (SELECT user.*, (SELECT count(*) FROM post WHERE post.AuthorId = user.UserId  and post.Timestamp > :dateLimit) as postactions, 
 								(SELECT count(*) FROM comment WHERE comment.UserId = user.UserId and comment.Timestamp > :dateLimit) as commentactions FROM user) as t1
+								WHERE t1.postactions+t1.commentactions <> 0
 								ORDER BY totalactions DESC
 								LIMIT ".$nbrMax, 
 		array("dateLimit"=>$dateLimit));
