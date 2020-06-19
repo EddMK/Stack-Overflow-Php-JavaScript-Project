@@ -26,24 +26,32 @@
 				
 		
 				$(function(){
-					$(".forms").hide();
-					
-					/*
-					pour chaque poste on rajoute le formulaire
-					
-					*/
+					//$(".forms").hide();
 				});
 				
 				
 				function hide_form(a){
-					$("#form"+a).hide();
+					$("#form"+a).remove();
 					$("#input"+a).show();
 					
 				}
 				
 				
-				function display_href(e,a){
+				function display_href(e,a){//rajoute
 					e.preventDefault();
+					
+					if($("#post"+a).length)
+					form = "";
+					form += "<form id='form"+a+"' class='forms' method='post'>";
+					form += "<table><tr><td>Comment:</td>";
+					form +="<td><input id='comment"+a+"' name='comment' type='text' ></td>";
+					form +="<td class='errors' id='errComment'></td></tr></table>";
+					form +="<input type='submit' value='add'>";
+					form +="<input type='button' value='cancel'  onclick='hide_form("+a+");' >	";
+					form += "</form>";
+					$("#post"+a).append(form);
+					
+					
 					id = a;
 					$("#input"+id).hide();
 					$("#form"+id).show();
@@ -84,7 +92,7 @@
     <body>
 		<?php include('menu.html'); ?>
 		<?php foreach($posts as $post){ ?>
-			<div class = "Post">
+			<div class = "Post"  id="post<?= $post->get_postid() ?>">
 					<div class ="rightSide">
 						<?php if($post->is_question()==true) {?>
 								<h1 class="titleQuestion"><?= $post->title ?></h1>
@@ -220,7 +228,7 @@
 						</div>
 					<?php }    ?>
 
-
+<!---
 					<form id="form<?= $post->get_postid() ?>" class="forms" method="post">
 						<table>
 								<tr>
@@ -232,8 +240,7 @@
 						<input type="submit" value="add">
 						<input type="button" value="cancel"  onclick="hide_form(<?= $post->get_postid() ?>);" >
 					</form>
-					<div class="return"></div>
-					
+-->					
 					
 					
 					

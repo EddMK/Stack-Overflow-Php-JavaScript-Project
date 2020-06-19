@@ -8,11 +8,16 @@
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
 		<script src="https://kit.fontawesome.com/9f16cf7640.js" crossorigin="anonymous"></script>
 		<script type="text/javascript" src="lib/jquery-3.5.1.min.js"></script>
-		<!---
 		<script>
-			let page,menu,search;
+			let page,menu,search,constante;
 			page = 1;
 			menu = "newest";
+			
+			
+			$.get("post/getsizepage", function(donnees){
+				constante = donnees;
+				console.log(constante);
+			});
 			
 			$(function(){
 				$(".questions").empty();
@@ -27,7 +32,6 @@
 						retour_li +="<p>"+value.body+"</p>";
 						retour_li += "<p><b>Asked "+value.ago+" by "+value.fullname+"("+value.score+" vote(s),"+value.answers+" answer(s))</b></p>";						
 						$.each(value.tags,function(key,value){
-							//console.log(typeof(value.tagname));
 							retour_li +="<a href='#' onclick='display_tag(event,\""+value.tagname+"\", "+value.tagid+");' >"+value.tagname  +"  </a>";
 						});
 						retour_li +="</li>";
@@ -37,7 +41,7 @@
 				$.get("post/number", function(donnees){
 					numberquestions = donnees;
 					//console.log(numberquestions);
-					totalPages = numberquestions  / 5;
+					totalPages = numberquestions  / constante;
 					totalPages = Math.ceil(totalPages);
 					
 					for(let i = 1; i<= totalPages; i++){
@@ -46,7 +50,7 @@
 					$("#page"+page).css("color", "orange");
 				});
 				
-				$("#searchpost").on("change keyup paste", function(){
+				$("#searchpost").keyup(function(){
 					event.preventDefault();
 					menu = "search";
 					$(".questions").empty();
@@ -62,14 +66,13 @@
 					}
 					search = $("#searchpost").val();
 					$.post("post/search",{page : page, search : search}, function(donnees){
-						//console.log(donnees);
 						$.each(JSON.parse(donnees),function(key,value){
 							var retour_li="<li>";
 							retour_li +="<p><a href='post/show/"+value.postid+"'  >"+value.titre+" </a> </p>";
 							retour_li +="<p>"+value.body+"</p>";
 							retour_li += "<p><b>Asked "+value.ago+" by "+value.fullname+"("+value.score+" vote(s),"+value.answers+" answer(s))</b></p>";						
 							$.each(value.tags,function(key,value){
-								retour_li +="<a href='#' onclick='display_tag(event,\""+value.tagname+"\", "+value.tagid+");' >"+value.tagname  +"  </a>";
+								retour_li +="<a href='#' onclick='display_tag(event,\""+value.tagname+"\", "+value.tagid+");' >"+value.tagname+"</a>";
 							});
 							retour_li +="</li>";
 							$(".questions").append(retour_li);
@@ -78,7 +81,7 @@
 					$.post("post/numbersearchs",{search : search} ,function(donnees){
 						numberquestions = donnees;
 						//alert(numberquestions);
-						totalPages = numberquestions  / 5;
+						totalPages = numberquestions  / constante;
 						totalPages = Math.ceil(totalPages);
 						for(let i = 1; i<= totalPages; i++){
 							$(".pagination").append("<a href='#'  id='page"+i+"'  onclick='change_page(event,"+i+");'>"+i+"</a>");
@@ -86,6 +89,39 @@
 						$("#page"+page).css("color", "orange");
 					});					
 				})
+				
+				
+				function display_tag(e,name,id){
+				e.preventDefault();
+				page = 1;
+				menu = id;
+				tagid = menu;
+				$(".pagination").empty();			
+				if($("#tagged").length){
+					$("#tagged").remove();
+				}
+				if($("#searchresults").length){
+					$("#searchresults").remove();
+					$("#searchpost").val('');
+				}
+				tagged = "<li><a href='#'  id='tagged'> Questions tagged["+name+"] </a></li>";
+				$(".ul_menu_questions").append(tagged);
+				$("ul.ul_menu_questions li a").css( "color", "black" );
+				$("#tagged").css( "color", "green" );
+				console.log(id);
+				recup_data(id);
+				$.post("post/numbertags",{tagid : tagid} ,function(donnees){
+					console.log(donnees);
+						numberquestions = donnees;
+						totalPages = numberquestions  / constante;
+						totalPages = Math.ceil(totalPages);
+						for(let i = 1; i<= totalPages; i++){
+							$(".pagination").append("<a href='#'  id='page"+i+"'  onclick='change_page(event,"+i+");'>"+i+"</a>");
+						}
+						$("#page"+page).css("color", "orange");
+				});
+				
+			}
 
 				
 			});
@@ -156,7 +192,7 @@
 					$.get("post/number", function(donnees){
 						numberquestions = donnees;
 						//console.log(numberquestions);
-						totalPages = numberquestions  / 5;
+						totalPages = numberquestions  / constante;
 						totalPages = Math.ceil(totalPages);
 						
 						for(let i = 1; i<= totalPages; i++){
@@ -172,7 +208,7 @@
 					$.get("post/number", function(donnees){
 						numberquestions = donnees;
 						//console.log(numberquestions);
-						totalPages = numberquestions  / 5;
+						totalPages = numberquestions  / constante;
 						totalPages = Math.ceil(totalPages);
 						
 						for(let i = 1; i<= totalPages; i++){
@@ -218,7 +254,7 @@
 				$.post("post/numbertags",{tagid : tagid} ,function(donnees){
 					console.log(donnees);
 						numberquestions = donnees;
-						totalPages = numberquestions  / 5;
+						totalPages = numberquestions  / constante;
 						totalPages = Math.ceil(totalPages);
 						for(let i = 1; i<= totalPages; i++){
 							$(".pagination").append("<a href='#'  id='page"+i+"'  onclick='change_page(event,"+i+");'>"+i+"</a>");
@@ -227,8 +263,8 @@
 				});
 				
 			}
+			
 		</script>
-		-->
     </head>
     <body>
 		<?php include('menu.html'); ?>

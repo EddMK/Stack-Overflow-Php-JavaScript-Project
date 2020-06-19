@@ -596,5 +596,10 @@ class ControllerPost extends Controller {
 		}
 	}
 	
+	public function getsizepage(){
+		$constante = Configuration::get("size_page");
+		echo $constante;
+	}
+	
 	
 }
