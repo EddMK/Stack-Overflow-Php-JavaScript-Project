@@ -1,8 +1,4 @@
-# Projet PRWB 1920 - StackOverflow
-
-## Notes de version itération 1 
-
-### Liste des utilisateurs et mots de passes
+### List users and passwords
 
   * User `admin` (Administrator), Password `Password1,`
   * User `alain` (Alain Silovy), Password `Password1,`
